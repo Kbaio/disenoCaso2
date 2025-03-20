@@ -10,13 +10,14 @@
 ## Stack
     React Native
 
-    Auth0 - 2FA
+    Cognito - 2FA
     
     Node.js (NestJS) / Lambda en conjunto con API gateaway (por definir)
     
     PostgreSQL como base dedatros.
     
-    API´s Plaid / TrueLayer para conectar cuentas bancarias de manera segura. Stripe / PayPal API para gestionar pagos y suscripciones dentro de la app.
+    API´s:
+     Plaid / TrueLayer para conectar cuentas bancarias de manera segura. Stripe / PayPal API para gestionar pagos y suscripciones dentro de la app.
     
     AWS para manejar el hosting.
 
@@ -26,9 +27,10 @@
 
     Datadog para análisis y observabilidad del sistema.
 
-    React Testing Library para pruebas unitarias e integración en frontend.
+    Testing:
+        React Testing Library para pruebas unitarias e integración en frontend.
 
-    Postman para validación de APIs.
+        Postman para validación de APIs.
 
     
 
