@@ -1,7 +1,7 @@
 # System Name
 
 - David Salazar Rodriguez - 2019000145
-
+- Gabriel Gutiérrez Mata  - 2022437833
 
 ## Description
 
