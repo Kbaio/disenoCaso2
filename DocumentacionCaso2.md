@@ -9,6 +9,8 @@
 ## Stack
 
 ## Frontend Design Specification
+    React Native
+    Node.js (NestJS) / Lambda en conjunto con API gateaway (por definir)
 
 ### Authentication Platform
 
