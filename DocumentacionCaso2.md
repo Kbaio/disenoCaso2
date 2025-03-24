@@ -12,27 +12,38 @@
 
     Cognito - 2FA
     
-    Node.js (NestJS) / Lambda en conjunto con API gateaway (por definir)
+    Node.js (NestJS) / Lambda in conjunction API gateaway
     
-    PostgreSQL como base dedatros.
+    PostgreSQL as the database.
     
     API´s:
-     Plaid / TrueLayer para conectar cuentas bancarias de manera segura. Stripe / PayPal API para gestionar pagos y suscripciones dentro de la app.
+     Plaid / TrueLayer to securely connect the bank accounts.
+     Stripe / PayPal API to manage payments and subscriptions within the app.
     
-    AWS para manejar el hosting.
+    AWS for hosting management.
 
-    Cognito para manejar el 2FA
+    Cognito to handle 2FA
     
-    Sentry para monitoreo y detección de errores en tiempo real.
+    AWS CloudWatch for error logs, and infrastructure monitoring and metrics
 
-    Datadog para análisis y observabilidad del sistema.
+    AWS X-Ray for errors and tracking services and latency
 
     Testing:
-        React Testing Library para pruebas unitarias e integración en frontend.
+        React Testing Library for unit tests and frontend integration.
 
-        Postman para validación de APIs.
+        Postman for API's validation
 
-    
+
+## Client Architecture
+
+The system will follow a N-Layer architecture, because it follows a separation of tasks, where the frontend (React Native) will communicate with the backend (Node.js/NestJS).
+
+    a) Mobile Developement = Native 
+    Even though the application uses JavaScript, it generates native code for Android and IOS.
+
+    b) Side Rendering = client-side rendering 
+    Because the aplication is dynamic and interactive, and it involves the browser receiving a minimal HTML file and using JavaScript to render content dynamically.
+
 
 ## Frontend Design Specification
 
