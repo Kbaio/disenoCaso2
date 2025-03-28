@@ -147,7 +147,24 @@ We adopt tools that facilitate the implementation and maintenance of visual comp
 - Cross-platform mobile development framework for iOS/Android.
 - Optimized native components including FlatList, Button, and View.
 - Built-in support for native modules.
-### 1. React Native
+### 2.React Navigation
+- Navigation management with `StackNavigator`, `DrawerNavigator`, and `BottomTabNavigator`, enabling smooth transitions between screens.
+- Passing parameters between screens using `route.params`, simplifying data transfer between views.
+
+### 3. Componentes UI
+- `SafeAreaView` to handle safe areas on devices with notches or curved edges.
+- `Vector-icons` for consistent iconography across platforms.
+- `Gesture-handler` to efficiently manage touch interactions.
+
+### 4. Platform Standards
+- Use of `cross-platform` design principles.
+- Visual components like buttons, lists, and text fields follow guidelines that ensure a coherent interface without requiring adjustments between platforms.
+
+### 5. Complementary Modules
+- `react-native-safe-area-context` for safe area management.
+- `expo-font` for loading custom fonts.
+- `expo-asset` for optimized handling of images and resources.
+- `@expo/vector-icons` for a cross-platform icon library.
 
 /// Mal
 
