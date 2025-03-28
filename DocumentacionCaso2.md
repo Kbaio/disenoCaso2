@@ -66,12 +66,94 @@ e) MFA and a sandbox for testing purpose
 
 - suggested platforms to look into: auth0, okta, cognito, MS entra, onelogin, firebase, veriam
 
-### Visual Components
+# Visual Components
 
 *Patterns & Principles:*
+
+## Patterns & Principles
+
+These principles ensure that the UI is scalable, maintainable, and easy to extend.
+### 1. Principios SOLID
+
+#### 1.1. Single 
+Each class has a single responsibility
+- `PagoRepository` handles exclusively the payment API communication.
+- `Notificador` handles notification sends without affecting other functionalities.
+- `HistorialManager`handles transaction processing and maintains their history.
+
+#### 1.2. Open
+Classes are open for extension but closed for modification:
+- `ProcesadorPagoStrategy` allows adding new payment processors without altering the core logic.
+- `NotificadorFactory` can be expanded to include new notification types.
+- `PagoRepositoryImpl` allows method extension without modifying the base structure.
+
+#### 1.3. Liskov 
+The derived classes can substitute the base ones without altering the behavior:
+- `NotificadorEmail`, `NotificadorSMS` and `NotificadorPush` implement the `Notificador` interface while maintaining its base contract.
+- `ProcesadorBancario` and `ProcesadorTarjeta` extend  `ProcesadorPagoStrategy`, allowing the payment method to be changed without modifying the core functionality.
+
+#### 1.4. Interface
+Interfaces are small and focused:
+- `ProcesadorPagoStrategy` defines specific methods for payment processors.
+- `Notificacion` handles exclusively the sending of notifications.
+- `PagoObserver` defines change notifications for `PagoRecurrente`.
+
+#### 1.5. Dependency
+Modules depend on abstractions, not concrete implementations:
+- `ContextoPago` depends on `ProcesadorPagoStrategy`, allowing the implementation to be changed without modifying the controller.
+- `AuthService` provides authentication and user validation through a single entry point.
+
+### 2. Principio DRY
+Eliminates duplication through reuse:
+- `PagoRepositoryImpl` centralizes data access logic to avoid repetition across different services.
+- `HistorialManager` encapsulates transaction history management, preventing logic duplication in multiple places.
+
+### 3. Separation of Concerns
+Responsibilities are divided into distinct layers:
+- **Models** like `PagoRecurrente`, `Usuario`and `Transaccion` handle data structures
+- **Repositories** like `PagoRepository` manage data access.
+- **Services** like `PagoService`and `UsuarioService` contain business logic.
+- **Controllers** like `PagoController` handle UI communication
+- **Observers** like `PagoObserver` and `NotificacionObserver` enable system event response
+
+### 4. Patrones de Diseño
+
+#### 4.1. MVVM (Model-View-ViewModel)
+- **Model:** Data structures like `Usuario`, `CuentaBancaria` and `Transaccion` with defined types.
+- **View:** Visual components such as `PaymentScreen`and `UserProfileScreen`.
+- **ViewModel:** Presentation logic classes like  `PaymentViewModel`, integrated with React Native hooks including `useState` and `useEffect`.
+
+#### 4.2. Repository
+- `PagoRepositoryImpl` manages payment persistence and encapsulates database access.
+- `PageRepositoryImpl` extends  `PageRepository`, to ensure flexible handling of recurring payments
+
+#### 4.3. Factory
+- `NotificadorFactory` creates `Notificador` instances based on notification type (SMS, Email, Push)
+
+#### 4.4. Strategy
+- `ProcesadorPagoStrategy` enables swapping payment methods without modifying core logic.
+- `ProcesadorBancario` and `ProcesadorTarjeta`  implement specific payment strategies.
+
+#### 4.5. Observer
+- `PagoObserver` enables subscription-based notifications for users.
+- `NotificacionObserver` handles notification status updates.
+
+#### 4.6. Singleton
+- `AuthService` ensures only one authentication instance exists application-wide.
+
+## Toolkits & Estándares
+We adopt tools that facilitate the implementation and maintenance of visual components, ensuring consistency across both iOS and Android platforms.
+### 1. React Native
+- Cross-platform mobile development framework for iOS/Android.
+- Optimized native components including FlatList, Button, and View.
+- Built-in support for native modules.
+### 1. React Native
+
+/// Mal
 
 We combined MVVM and Atomic Design to create a robust, maintainable, and scalable architecture for our project. In this approach, Atomic Design was used to define and structure the UI components as small, reusable building blocks, ensuring consistency and modularity. Each atom (like buttons, text inputs) serves as the basic unit, which then combines into molecules (like form groups or card components) and organisms (like navigation menus or product lists).
 
 At the same time, MVVM was implemented to separate the concerns of UI rendering and data management. The View layer in MVVM is linked to the UI components defined through Atomic Design, while the ViewModel handles the logic, binding the data to the UI in a clean and testable way. This combination allows for an efficient workflow where the UI components are independently reusable, and the business logic remains decoupled, enabling easier updates and ensuring the system's flexibility.
 
 By combining both patterns, we achieved a system that is not only modular and scalable at the UI level but also maintains clear separation between the presentation and logic layers, making the project easier to extend and maintain over time.
+////
