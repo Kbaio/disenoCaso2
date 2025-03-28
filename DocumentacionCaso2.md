@@ -144,8 +144,8 @@ Responsibilities are divided into distinct layers:
 ## Toolkits & Estándares
 We adopt tools that facilitate the implementation and maintenance of visual components, ensuring consistency across both iOS and Android platforms.
 ### 1. React Native
-- Cross-platform mobile development framework for iOS/Android.
-- Optimized native components including FlatList, Button, and View.
+- `Cross-platform` mobile development framework for iOS/Android.
+- Optimized native components including `FlatList`, `Button`, and `View`.
 - Built-in support for native modules.
 ### 2.React Navigation
 - Navigation management with `StackNavigator`, `DrawerNavigator`, and `BottomTabNavigator`, enabling smooth transitions between screens.
