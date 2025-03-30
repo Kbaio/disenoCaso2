@@ -174,3 +174,39 @@ At the same time, MVVM was implemented to separate the concerns of UI rendering 
 
 By combining both patterns, we achieved a system that is not only modular and scalable at the UI level but also maintains clear separation between the presentation and logic layers, making the project easier to extend and maintain over time.
 ////
+
+# External services
+
+## A. UI ↔ Business Logic (Frontend)
+**Interaction between UI and client-side logic.**
+
+| Component            | Tech + Pattern          | Description                                                          | Relationships                                                         |
+| -------------------- | ----------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| **PaymentViewModel** | MVVM (React Hooks)      | Payment logic, validates inputs and communicates with PagoRepository | `PaymentScreen UI` ↔ `PagoRepository` ↔ `Stripe/APIs`                 |
+| **AuthService**      | Singleton + Cognito SDK | Manages user authentication (login, and 2FA)                         | `LoginScreen UI` ↔ `AWS Cognito` ↔ `NestJS BE`                        |
+| **Notificador**      | Observer                | Listens to payment events and triggers SMS/notifications             | `PagoRepository` ↔ `AWS SNS (NestJS)`                                 |
+| **PagoRepository**   | -                       | API calls for payments and bank operations                           | `PaymentViewModel` ↔ `NestJS backend` ↔ `Stripe/Plaid/TrueLayer APIs` |
+
+## B. External Services Integrations
+
+### 1. Authentication and Authorization
+| Service     | Technology  | Description                         | Relationships                               |
+| ----------- | ----------- | ----------------------------------- | ------------------------------------------- |
+| **Cognito** | Cognito SDK | Handles user authentication and 2FA | `AuthService (frontend)` ↔ `NestJS backend` |
+
+### 2. SaaS and Payment Platforms
+| Service             | Technology | Description                            | Relationships                            |
+| ------------------- | ---------- | -------------------------------------- | ---------------------------------------- |
+| **Stripe/PayPal**   | Stripe SDK | Payments processes and subscriptions   | `ProcesadorPagoStrategy (BE)` ↔ `NestJS` |
+| **Plaid/TrueLayer** | Plaid SDK  | Links bank accounts and retrieves data | `PagoRepository` ↔ `NestJS BE`           |
+
+### 3. External APIs
+| Service     | Technology | Description             | Relationships                    |
+| ----------- | ---------- | ----------------------- | -------------------------------- |
+| **AWS SNS** | SNS API    | Sends reminders via SMS | `Notificador (FE)` ↔ `NestJS BE` |
+
+### 4. Monitoring
+| Service            | Technology | Description               | Relationships             |
+| ------------------ | ---------- | ------------------------- | ------------------------- |
+| **AWS CloudWatch** | CloudWatch | Metrics and Log errors    | `NestJS/Lambda (BE only)` |
+| **AWS X-Ray**      | X-ray      | Traces API errors/latency | `API Gateway` ↔ `Lambda`  |
