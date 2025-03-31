@@ -8,6 +8,10 @@
       ]
     }
   },
+  "typeRoots": [
+    "node_modules/@types", // Default type definitions
+    "./node_modules/aws-amplify" // Add this for AWS Amplify
+  ],
   "include": [
     "**/*.ts",
     "**/*.tsx",

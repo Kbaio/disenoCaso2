@@ -1,17 +1,28 @@
-import { View, Text, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, Button } from 'react-native';
+import { Amplify } from 'aws-amplify';
+import awsconfig from '../src/aws-exports';
+import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
 
-export default function HomeScreen() {
+Amplify.configure(awsconfig);
+
+export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Home</Text>
-    </View>
+    <Authenticator.Provider>
+      <Authenticator>
+        <AppContent />
+      </Authenticator>
+    </Authenticator.Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+function AppContent() {
+  const { signOut, user } = useAuthenticator();
+
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Welcome, {user?.username}!</Text>
+      <Button title="Sign Out" onPress={signOut} />
+    </View>
+  );
+}
