@@ -1,12 +1,12 @@
 {
   "whyContinueWithGen1": "I am a current Gen 1 user",
-  "projectName": "awsDemo",
+  "projectName": "AWSdemo",
   "version": "3.1",
   "frontend": "javascript",
   "javascript": {
     "framework": "react-native",
     "config": {
-      "SourceDir": "src",
+      "SourceDir": "app",
       "DistributionDir": "/",
       "BuildCommand": "npm.cmd run-script build",
       "StartCommand": "npm.cmd run-script start"

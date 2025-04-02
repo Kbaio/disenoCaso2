@@ -1,12 +1,13 @@
 {
   "auth": {
-    "awsdemo0dbd5733": {
+    "awsdemoe1e63a82": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
-        "mfaConfiguration": "OFF",
+        "mfaConfiguration": "OPTIONAL",
         "mfaTypes": [
-          "SMS"
+          "SMS",
+          "TOTP"
         ],
         "passwordProtectionSettings": {
           "passwordPolicyCharacters": [],

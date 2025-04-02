@@ -7,6 +7,8 @@
 
 ## Description
 
+Billbot is an AI voice-activated payment assistant that allows users to schedule and execute recurring payments seamlessly. By integrating banking APIs and payment processors, Billbot automates transactions and provides a user-friendly experience for managing financial commitments.
+
 ## Stack
     React Native
 

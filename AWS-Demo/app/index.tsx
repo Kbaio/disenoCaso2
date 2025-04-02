@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
 import { Amplify } from 'aws-amplify';
-import awsconfig from '../src/aws-exports';
+import awsconfig from './Services/AWS/aws-exports';
 import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
 
 Amplify.configure(awsconfig);

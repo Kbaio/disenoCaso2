@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "aws-cognito-demo",
-    "slug": "aws-cognito-demo",
+    "name": "AWS-Demo",
+    "slug": "AWS-Demo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
