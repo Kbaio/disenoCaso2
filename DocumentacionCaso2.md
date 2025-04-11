@@ -225,6 +225,142 @@ We adopt tools that facilitate the implementation and maintenance of visual comp
 
 ### Backend Architecture
 
+//////////////////////////////
+
+Se adopta una arquitectura **Monolithic-MVC** expuesta mediante **REST API**, utilizando el framework **NestJS** sobre **Node.js**.
+
+#### Capas internas que manejan requests/responses
+
+La comunicación sigue el patrón típico **MVC**:
+
+- **Controller**: Utilizadas por clases como `PagoController`,`UsuarioController`, `AuthController`. Estas reciben las peticiones HTTP, validan parámetros iniciales y delegan en los servicios. 
+Permiten aislar la lógica de entrada/salida del core de negocio. Responden a los endpoints definidos en la API. 
+
+
+- **Service**: Clases como `PagoService`, `UsuarioService`, `AuthService`, ejecutan la lógica de negocio, validan flujos y orquestan los repositorios.
+Estas centralizan la lógica del sistema para mantener el código desacoplado y reutilizable.
+
+
+- **Repository**: Las clases de `PagoRepositoryImpl`, `UsuarioRepositoryImpl`, `CuentaRepositoryImpl` interactúan con la base de datos y con APIs externas.
+Aislando el acceso a datos. Facilitan pruebas y cambios en infraestructura sin afectar la lógica.
+
+
+#### Interacción de patrones de diseño con requests u otros triggers
+
+- **Factory**: La clase de `NotificadorFactory` utiliza el patron para el Service que maneja las notificaciones.
+Motivo del uso, crear instancias de `NotificadorEmail`, `NotificadorSMS` o `NotificadorPush` dinámicamente según configuración sin acoplar el servicio principal.
+
+- **Strategy**: Las clase de `ProcesadorPagoStrategy`, `ProcesadorBancario`, `ProcesadorTarjeta` son utilizadas en `PagoService` para manejar múltiples métodos de pago.
+Permitiendo que el servicio conmute entre distintas pasarelas de pago sin modificar su lógica.
+
+
+- **Observer**: `PagoObserver`, `NotificacionObserver` son utilizadas por `PagoService` y `Notificador` reaccionado a eventos como pagos exitosos y disparar notificaciones sin acoplar servicios directamente.
+
+- **Singleton**: `AuthService` utilizada en todo el sistema, garantiza una única instancia para autenticación y validación Cognito.
+
+---
+### 2. Serverless, Cloud, On-Premise, or Hybrid?
+
+Se adopta una solución **Serverless en la nube (AWS)** por sus capacidades de escalabilidad automática, eficiencia de costos y facilidad de integración.
+
+#### Hardware y tipos de máquinas cloud
+
+| Componente       | Tipo / Servicio AWS        | Propósito                                |
+|------------------|----------------------------|------------------------------------------|
+| Lógica de backend| AWS Lambda   | Funciones serverless                     |
+| Base de datos    | RDS PostgreSQL | Datos relacionales ACID               |
+| Gateway API      | AWS API Gateway            | Entrada segura y escalable               |
+| Autenticación    | AWS Cognito                | Gestión de usuarios y sesiones           |
+| Notificaciones   | Amazon SNS                 | Envío de SMS/Email por eventos           |
+| Logs/Monitoreo   | CloudWatch + X-Ray         | Logging, trazabilidad y métricas         |
+
+#### Impacto en frameworks, librerías y lenguajes
+
+| Tecnología   | Rol                | Ventaja principal                                   |
+|--------------|--------------------|-----------------------------------------------------|
+| Node.js      | Runtime backend    | I/O no bloqueante, alto rendimiento en cloud        |
+| NestJS       | Framework backend  | Modular, soporta MVC, escalable                     |
+| TypeScript   | Lenguaje base      | Tipado fuerte, mantenimiento y escalabilidad        |
+| PostgreSQL   | Base de datos      | Integridad ACID, consultas complejas                |
+| Stripe/Plaid | Pasarelas externas | Confiables, seguras, ampliamente adoptadas          |
+
+---
+
+### 3. Service vs. Microservices?
+
+Se implementa una arquitectura **modular monolítica**, con separación clara por dominios funcionales.
+
+#### Divisiones lógicas para distribuir la carga de trabajo
+
+| Módulo             | Responsabilidad principal                    |
+|--------------------|-----------------------------------------------|
+| AuthModule         | Autenticación y autorización                  |
+| PagoModule         | Procesamiento de pagos                        |
+| SuscripcionModule  | Gestión de planes de suscripción              |
+| NotificacionModule | Envío de notificaciones                       |
+| UsuarioModule      | Registro y perfil de usuarios                 |
+
+#### Impacto en organización del código y colaboración del equipo
+
+- Cada módulo tiene su propio controlador, servicio y repositorio.
+- Se favorece la independencia de desarrollo, pruebas y despliegue.
+- Permite escalar el equipo asignando ownership por módulo.
+- Posible migración futura a microservicios si el sistema crece.
+
+---
+
+### 4. Event-Driven, Queues, Brokers, Producer/Consumer, Pub/Sub?
+
+#### Partes que requieren estas arquitecturas
+
+- Confirmación de pagos  
+- Envío automático de recordatorios de cobro  
+- Registro de eventos para trazabilidad
+
+#### Servicios cloud que proporcionan estas características
+
+| Evento              | Servicio AWS          | Patrón de arquitectura |
+|---------------------|-----------------------|-------------------------|
+| Pago realizado      | SNS + Lambda          | Pub/Sub                 |
+| Recordatorio pendiente | EventBridge + Lambda | Event-Driven            |
+| Error en suscripción| CloudWatch + Logs     | Logging + Alerta        |
+
+#### Capas de integración y clases utilizadas
+
+- `PagoService`: Emite eventos  
+- `NotificadorService`: Suscriptor de eventos  
+- `EventoService`: Orquestador de flujos  
+- `LoggerService`: Persistencia de eventos y errores  
+
+---
+
+### 5. API Gateway (Security & Scalability)
+
+#### ¿Es necesario un API Gateway?
+
+Sí. Se utiliza **AWS API Gateway** para gestionar el tráfico hacia el backend serverless.
+
+#### Servicio cloud seleccionado
+
+- **AWS API Gateway**: Se integra nativamente con AWS Lambda y Cognito.
+
+#### ¿Cómo apoya la seguridad y escalabilidad?
+
+##### Seguridad
+
+- Autenticación con JWT vía AWS Cognito.  
+- Validación de CORS.  
+- Throttling y cuotas por usuario o IP.  
+- Integración con AWS WAF para reglas personalizadas.
+
+##### Escalabilidad
+
+- Escala horizontalmente de forma automática.  
+- Maneja cientos o miles de requests concurrentes sin intervención manual.  
+- Provee caching, logging y métricas para optimización continua.
+
+///////////////////////////////
+
 ### Data Layer Design
 
 ## Architecture Design
