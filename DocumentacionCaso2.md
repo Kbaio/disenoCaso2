@@ -68,7 +68,7 @@ e) MFA and a sandbox for testing purpose
 
 - suggested platforms to look into: auth0, okta, cognito, MS entra, onelogin, firebase, veriam
 
-# Visual Components
+## Visual Components
 
 *Patterns & Principles:*
 
@@ -168,16 +168,11 @@ We adopt tools that facilitate the implementation and maintenance of visual comp
 - `expo-asset` for optimized handling of images and resources.
 - `@expo/vector-icons` for a cross-platform icon library.
 
-/// Mal
+## Object design patterns
 
-We combined MVVM and Atomic Design to create a robust, maintainable, and scalable architecture for our project. In this approach, Atomic Design was used to define and structure the UI components as small, reusable building blocks, ensuring consistency and modularity. Each atom (like buttons, text inputs) serves as the basic unit, which then combines into molecules (like form groups or card components) and organisms (like navigation menus or product lists).
+![Descripción de la imagen](ObjectDisignPatterns.png)
 
-At the same time, MVVM was implemented to separate the concerns of UI rendering and data management. The View layer in MVVM is linked to the UI components defined through Atomic Design, while the ViewModel handles the logic, binding the data to the UI in a clean and testable way. This combination allows for an efficient workflow where the UI components are independently reusable, and the business logic remains decoupled, enabling easier updates and ensuring the system's flexibility.
-
-By combining both patterns, we achieved a system that is not only modular and scalable at the UI level but also maintains clear separation between the presentation and logic layers, making the project easier to extend and maintain over time.
-////
-
-# External services
+## External services
 
 ## A. UI ↔ Business Logic (Frontend)
 **Interaction between UI and client-side logic.**
@@ -212,3 +207,28 @@ By combining both patterns, we achieved a system that is not only modular and sc
 | ------------------ | ---------- | ------------------------- | ------------------------- |
 | **AWS CloudWatch** | CloudWatch | Metrics and Log errors    | `NestJS/Lambda (BE only)` |
 | **AWS X-Ray**      | X-ray      | Traces API errors/latency | `API Gateway` ↔ `Lambda`  |
+
+## Project structure
+
+
+//Se toma del AWS-DEMO
+
+## Final FE architecture diagram
+
+// En creacion
+
+# Backend Design Specifications
+
+## Backend Design Specifications
+
+### Proof of Concepts
+
+### Backend Architecture
+
+### Data Layer Design
+
+## Architecture Design
+
+## Architecture Compliance Matrix
+
+
