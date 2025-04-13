@@ -208,3 +208,5 @@ During development, the following issues were encountered and resolved:
     Cause: All middleware were treated equally, without distinction between optional and required
 
     Fix: Authentication middleware was always inserted first in the chain and executed before others. If it throws, the chain is stopped, enforcing its required status.
+
+for more details on commits of the project, check this [repository](https://github.com/FabriBott/Serverless-TypeScript-Project.git)
