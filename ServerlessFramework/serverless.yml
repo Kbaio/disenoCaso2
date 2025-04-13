@@ -1,0 +1,38 @@
+service: svlesstemplate
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: us-east-2
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    LOG_LEVEL: ${env:LOG_LEVEL}
+    DYNAMODB_TABLE: ${env:DYNAMODB_TABLE}
+    NODE_ENV: ${env:NODE_ENV}
+
+functions:
+  exampleHandlerOne:
+    handler: src/handlers/getUserBalanceHandler.getUserBalanceHandler
+    events:
+      - http:
+          path: example-one
+          method: post
+
+  exampleHandlerTwo:
+    handler: src/handlers/paymentHandler.paymentHandler
+    events:
+      - http:
+          path: example-two
+          method: post  
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-dotenv-plugin
+  - serverless-offline
+
+package:
+  individually: true
+
+custom:
+  dotenv:
+    path: .env

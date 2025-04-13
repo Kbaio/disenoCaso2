@@ -1,0 +1,433 @@
+{
+	"info": {
+		"_postman_id": "79916343-4197-498a-bd17-52030e23abd8",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37591924"
+	},
+	"item": [
+		{
+			"name": "getUserBalanceHandler200",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "my-hardcoded-token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userId\": \"user2\",\r\n  \"amount\" : 7\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://cph7ofiv0c.execute-api.us-east-2.amazonaws.com/dev/example-one",
+					"protocol": "https",
+					"host": [
+						"cph7ofiv0c",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"example-one"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Prueba",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/users/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 19 Aug 2024 17:53:11 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "78"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"correo\": \"user1@example.com\",\n    \"contraseña\": \"hashed_password1\",\n    \"rol\": 1\n}"
+				}
+			]
+		},
+		{
+			"name": "getUserBalanceHandler502NoToken",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "my-hardcoded-token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userId\": \"user2\",\r\n  \"amount\" : 7\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://cph7ofiv0c.execute-api.us-east-2.amazonaws.com/dev/example-one",
+					"protocol": "https",
+					"host": [
+						"cph7ofiv0c",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"example-one"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Prueba",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/users/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 19 Aug 2024 17:53:11 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "78"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"correo\": \"user1@example.com\",\n    \"contraseña\": \"hashed_password1\",\n    \"rol\": 1\n}"
+				}
+			]
+		},
+		{
+			"name": "getUserBalanceHandler500NoFunds",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "my-hardcoded-token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userId\": \"user2\",\r\n  \"amount\" : 7\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://cph7ofiv0c.execute-api.us-east-2.amazonaws.com/dev/example-one",
+					"protocol": "https",
+					"host": [
+						"cph7ofiv0c",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"example-one"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Prueba",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/users/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 19 Aug 2024 17:53:11 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "78"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"correo\": \"user1@example.com\",\n    \"contraseña\": \"hashed_password1\",\n    \"rol\": 1\n}"
+				}
+			]
+		},
+		{
+			"name": "PaymentHandler200",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "my-hardcoded-token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userId\": \"user1\",\r\n  \"cardNumber\": \"123456789123\",\r\n  \"service\": \"Netflix\",\r\n  \"paymentAmount\": 10,\r\n  \"paymentFrequency\": \"monthly\",\r\n  \"startDate\": \"2025-04-10\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://cph7ofiv0c.execute-api.us-east-2.amazonaws.com/dev/example-two",
+					"protocol": "https",
+					"host": [
+						"cph7ofiv0c",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"example-two"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PaymentHandler500Service",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "my-hardcoded-token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userId\": \"user1\",\r\n  \"cardNumber\": \"123456789123\",\r\n  \"service\": \"Servicio incorrecto\",\r\n  \"paymentAmount\": 10,\r\n  \"paymentFrequency\": \"monthly\",\r\n  \"startDate\": \"2025-04-10\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://cph7ofiv0c.execute-api.us-east-2.amazonaws.com/dev/example-two",
+					"protocol": "https",
+					"host": [
+						"cph7ofiv0c",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"example-two"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PaymentHandler500PayingMethod",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "my-hardcoded-token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userId\": \"user1\",\r\n  \"cardNumber\": \"33223232323\",\r\n  \"service\": \"Netflix\",\r\n  \"paymentAmount\": 10,\r\n  \"paymentFrequency\": \"monthly\",\r\n  \"startDate\": \"2025-04-10\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://cph7ofiv0c.execute-api.us-east-2.amazonaws.com/dev/example-two",
+					"protocol": "https",
+					"host": [
+						"cph7ofiv0c",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"example-two"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PaymentHandler500NoToken",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userId\": \"user1\",\r\n  \"cardNumber\": \"123456789123\",\r\n  \"service\": \"Netflix\",\r\n  \"paymentAmount\": 10,\r\n  \"paymentFrequency\": \"monthly\",\r\n  \"startDate\": \"2025-04-10\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://cph7ofiv0c.execute-api.us-east-2.amazonaws.com/dev/example-two",
+					"protocol": "https",
+					"host": [
+						"cph7ofiv0c",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"example-two"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
