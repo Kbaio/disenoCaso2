@@ -79,9 +79,9 @@ These principles ensure that the UI is scalable, maintainable, and easy to exten
 
 #### 1.1. Single 
 Each class has a single responsibility
-- `PagoRepository` handles exclusively the payment API communication.
-- `Notificador` handles notification sends without affecting other functionalities.
-- `HistorialManager`handles transaction processing and maintains their history.
+- `PagoRepository` use exclusively the payment API communication.
+- `Notificador` use notification sends without affecting other functionalities.
+- `HistorialManager`use transaction processing and maintains their history.
 
 #### 1.2. Open
 Classes are open for extension but closed for modification:
@@ -97,7 +97,7 @@ The derived classes can substitute the base ones without altering the behavior:
 #### 1.4. Interface
 Interfaces are small and focused:
 - `ProcesadorPagoStrategy` defines specific methods for payment processors.
-- `Notificacion` handles exclusively the sending of notifications.
+- `Notificacion` use exclusively the sending of notifications.
 - `PagoObserver` defines change notifications for `PagoRecurrente`.
 
 #### 1.5. Dependency
@@ -138,7 +138,7 @@ Responsibilities are divided into distinct layers:
 
 #### 4.5. Observer
 - `PagoObserver` enables subscription-based notifications for users.
-- `NotificacionObserver` handles notification status updates.
+- `NotificacionObserver` use notification status updates.
 
 #### 4.6. Singleton
 - `AuthService` ensures only one authentication instance exists application-wide.
@@ -154,7 +154,7 @@ We adopt tools that facilitate the implementation and maintenance of visual comp
 - Passing parameters between screens using `route.params`, simplifying data transfer between views.
 
 ### 3. Componentes UI
-- `SafeAreaView` to handle safe areas on devices with notches or curved edges.
+- `SafeAreaView` to use safe areas on devices with notches or curved edges.
 - `Vector-icons` for consistent iconography across platforms.
 - `Gesture-handler` to efficiently manage touch interactions.
 
@@ -357,141 +357,210 @@ POC Step 6: Deployment & Testing
 
 ### Backend Architecture
 
-//////////////////////////////
+A **modular monolithic** architecture is adopted for the backend, using the **NestJS** framework on **Node.js**.
 
-Se adopta una arquitectura **Monolithic-MVC** expuesta mediante **REST API**, utilizando el framework **NestJS** sobre **Node.js**.
+#### Internal layers handling requests/responses
 
-#### Capas internas que manejan requests/responses
+A layered architecture is employed to ensure a clear separation of responsibilities:
 
-La comunicación sigue el patrón típico **MVC**:
+- **Controller**: Handles HTTP requests/responses (e.g., PagoController, UsuarioController).
 
-- **Controller**: Utilizadas por clases como `PagoController`,`UsuarioController`, `AuthController`. Estas reciben las peticiones HTTP, validan parámetros iniciales y delegan en los servicios. 
-Permiten aislar la lógica de entrada/salida del core de negocio. Responden a los endpoints definidos en la API. 
+- **Service**: Contains business logic (e.g., PagoService, UsuarioService).
 
+- **Repository**: Manages data access (e.g., PagoRepositoryImpl, UsuarioRepositoryImpl).
 
-- **Service**: Clases como `PagoService`, `UsuarioService`, `AuthService`, ejecutan la lógica de negocio, validan flujos y orquestan los repositorios.
-Estas centralizan la lógica del sistema para mantener el código desacoplado y reutilizable.
+#### Interaction of design patterns with requests or other triggers
 
+**Dependency Injection**
 
-- **Repository**: Las clases de `PagoRepositoryImpl`, `UsuarioRepositoryImpl`, `CuentaRepositoryImpl` interactúan con la base de datos y con APIs externas.
-Aislando el acceso a datos. Facilitan pruebas y cambios en infraestructura sin afectar la lógica.
+Used natively in NestJS to decouple classes from each other.
 
-
-#### Interacción de patrones de diseño con requests u otros triggers
-
-- **Factory**: La clase de `NotificadorFactory` utiliza el patron para el Service que maneja las notificaciones.
-Motivo del uso, crear instancias de `NotificadorEmail`, `NotificadorSMS` o `NotificadorPush` dinámicamente según configuración sin acoplar el servicio principal.
-
-- **Strategy**: Las clase de `ProcesadorPagoStrategy`, `ProcesadorBancario`, `ProcesadorTarjeta` son utilizadas en `PagoService` para manejar múltiples métodos de pago.
-Permitiendo que el servicio conmute entre distintas pasarelas de pago sin modificar su lógica.
-
-
-- **Observer**: `PagoObserver`, `NotificacionObserver` son utilizadas por `PagoService` y `Notificador` reaccionado a eventos como pagos exitosos y disparar notificaciones sin acoplar servicios directamente.
-
-- **Singleton**: `AuthService` utilizada en todo el sistema, garantiza una única instancia para autenticación y validación Cognito.
+- Allows injecting repositories, domain services, and adapters without coupling implementations.
+- Facilitates unit testing and architectural flexibility.
 
 ---
+
+**Command Handler**
+
+Clearly separates read and write operations.
+
+- `CreatePagoCommandHandler`: Handles payment creation logic.
+- `ActualizarEstadoCommandHandler`: Processes transaction state changes.
+
+---
+
+**Event Sourcing**
+
+Used to record significant events in the financial system.
+
+- Each relevant action generates an event (`PagoRealizadoEvent`, `CuentaBloqueadaEvent`) that can be replayed to reconstruct the system's state.
+
+**Decorator**
+
+Extensively used for validation, authorization, and data transformation.
+
+- Decorators like `@UseGuards`, `@Roles`, `@Transform`, and custom validators apply cross-cutting rules to the system.
+
+**Adapter**
+
+Part of the hexagonal architecture to isolate external dependencies.
+
+- Examples: `StripeAdapter`, `PlaidAdapter`.
+- Enables integration with third-party services without coupling to the domain core.
+
+**Template Method**
+
+Applied in abstract services that define reusable common flows.
+
+- `BaseServicioPago`: Defines generic steps for payment processing.
+- Subclasses complete specific logic for banks, cards, etc.
+
+---
+
 ### 2. Serverless, Cloud, On-Premise, or Hybrid?
 
-Se adopta una solución **Serverless en la nube (AWS)** por sus capacidades de escalabilidad automática, eficiencia de costos y facilidad de integración.
+A **Serverless cloud solution (AWS)** is adopted for its automatic scalability, cost efficiency, and ease of integration.
 
-#### Hardware y tipos de máquinas cloud
+#### Hardware and cloud machine types
 
-| Componente       | Tipo / Servicio AWS        | Propósito                                |
-|------------------|----------------------------|------------------------------------------|
-| Lógica de backend| AWS Lambda   | Funciones serverless                     |
-| Base de datos    | RDS PostgreSQL | Datos relacionales ACID               |
-| Gateway API      | AWS API Gateway            | Entrada segura y escalable               |
-| Autenticación    | AWS Cognito                | Gestión de usuarios y sesiones           |
-| Notificaciones   | Amazon SNS                 | Envío de SMS/Email por eventos           |
-| Logs/Monitoreo   | CloudWatch + X-Ray         | Logging, trazabilidad y métricas         |
+These are the technologies and services we will use:
 
-#### Impacto en frameworks, librerías y lenguajes
+**AWS Lambda**
+- Executes serverless functions without the need to manage servers.
+- Classes like `PaymentService` create on-demand payments, and `TransactionHandler` efficiently processes transactions.
 
-| Tecnología   | Rol                | Ventaja principal                                   |
-|--------------|--------------------|-----------------------------------------------------|
-| Node.js      | Runtime backend    | I/O no bloqueante, alto rendimiento en cloud        |
-| NestJS       | Framework backend  | Modular, soporta MVC, escalable                     |
-| TypeScript   | Lenguaje base      | Tipado fuerte, mantenimiento y escalabilidad        |
-| PostgreSQL   | Base de datos      | Integridad ACID, consultas complejas                |
-| Stripe/Plaid | Pasarelas externas | Confiables, seguras, ampliamente adoptadas          |
+**RDS PostgreSQL**
+- Stores transactional data, ensuring consistency.
+- `PaymentRepository` stores payment details, and `UserRepository` stores user data.
+
+**AWS API Gateway**
+- Manages scalable API request traffic.
+- Classes like `PaymentController` handle payment requests, and `UserController` manages user requests.
+
+**AWS Cognito**
+- Manages user authentication and authorization.
+- `AuthService` handles user authentication, and `SessionManager` validates user sessions.
+
+**Amazon SNS**
+- Sends notifications at scale.
+- Classes like `NotificationService` send notifications about payment or account status, and `PaymentProcessor` sends notifications after processing a payment.
+
+**CloudWatch**
+- Provides real-time monitoring and tracking.
+- `ErrorLogger` logs errors and exceptions, and `TransactionTracker` tracks transactions to improve performance.
+
+#### Impact on frameworks, libraries, and languages
+
+These are the frameworks, libraries, and languages we will use:
+
+| Technology   | Role                | Main Advantage                                    |
+|--------------|---------------------|--------------------------------------------------|
+| Node.js      | Backend runtime     | Non-blocking I/O, high performance in the cloud  |
+| NestJS       | Backend framework   | Modular, supports MVC, scalable                 |
+| TypeScript   | Base language       | Strong typing, maintainability, and scalability |
+| PostgreSQL   | Database            | ACID integrity, complex queries                 |
+| Stripe/Plaid | External gateways   | Reliable, secure, widely adopted                |
 
 ---
 
 ### 3. Service vs. Microservices?
 
-Se implementa una arquitectura **modular monolítica**, con separación clara por dominios funcionales.
+A **service-based architecture** is used to facilitate responsibility separation and enable progressive scalability.
 
-#### Divisiones lógicas para distribuir la carga de trabajo
+#### Logical divisions to distribute workload
 
-| Módulo             | Responsabilidad principal                    |
-|--------------------|-----------------------------------------------|
-| AuthModule         | Autenticación y autorización                  |
-| PagoModule         | Procesamiento de pagos                        |
-| SuscripcionModule  | Gestión de planes de suscripción              |
-| NotificacionModule | Envío de notificaciones                       |
-| UsuarioModule      | Registro y perfil de usuarios                 |
+| Service              | Main Responsibility                          |
+|----------------------|----------------------------------------------|
+| AuthService          | Authentication and authorization management |
+| PaymentService       | Payment processing                          |
+| SubscriptionService  | Subscription plan management                |
+| NotificationService  | Notification delivery                       |
+| UserService          | User registration and profile management    |
 
-#### Impacto en organización del código y colaboración del equipo
+#### Impact on code organization and team collaboration
 
-- Cada módulo tiene su propio controlador, servicio y repositorio.
-- Se favorece la independencia de desarrollo, pruebas y despliegue.
-- Permite escalar el equipo asignando ownership por módulo.
-- Posible migración futura a microservicios si el sistema crece.
+- **Branching Policy**:
+
+The **GitFlow** strategy is used for branch management.
+
+- **main**: Main branch containing the stable version of the code.
+- **develop**: Development branch containing new features and fixes before merging into `main`.
+- **Feature branches**: Each new feature is developed in a separate branch from `develop` and merged back once completed.
+- **Release branches**: Created for preparing new versions, merged into `main` and `develop` afterward.
+- **Hotfix branches**: Created for critical production fixes, merged into `main` and `develop`.
+
+- **Versioning and Release Management**:
+
+The **SemVer** (Semantic Versioning) convention is followed: `MAJOR.MINOR.PATCH`.
+
+- For each stable release, the **`PATCH`** number is incremented for minor fixes, **`MINOR`** for new features without breaking compatibility, and **`MAJOR`** for disruptive changes that break compatibility.
+- A system of **weekly releases** with incremental versions is implemented.
+- Each team is exclusively responsible for its respective service (e.g., `PaymentService`, `UserService`).
+
+- **Collaboration and Branch Usage**:
+
+- Teams collaborate using **pull requests** to integrate changes into `develop` or `release` branches.
+- Code reviews are mandatory before merging any branch into `main` or `develop`.
+- **Change documentation** is encouraged in each pull request to facilitate understanding of modifications.
+- Teams must follow a **CI/CD** process that automates testing and deployments to staging or production environments.
+
+- **Team Scalability**:
+
+- Dividing responsibilities by service facilitates team growth, as each team specializes in a specific service.
+- As the system scales, teams can migrate from a monolithic structure to **microservices** if necessary, without disrupting workflows.
 
 ---
 
 ### 4. Event-Driven, Queues, Brokers, Producer/Consumer, Pub/Sub?
 
-#### Partes que requieren estas arquitecturas
+#### Parts requiring these architectures
 
-- Confirmación de pagos  
-- Envío automático de recordatorios de cobro  
-- Registro de eventos para trazabilidad
+- Payment confirmation  
+- Automatic billing reminders  
+- Event logging for traceability  
 
-#### Servicios cloud que proporcionan estas características
+#### Cloud services providing these features
 
-| Evento              | Servicio AWS          | Patrón de arquitectura |
-|---------------------|-----------------------|-------------------------|
-| Pago realizado      | SNS + Lambda          | Pub/Sub                 |
-| Recordatorio pendiente | EventBridge + Lambda | Event-Driven            |
-| Error en suscripción| CloudWatch + Logs     | Logging + Alerta        |
+| Event               | AWS Service            | Architecture Pattern |
+|---------------------|------------------------|----------------------|
+| Payment completed   | EventBridge + Lambda   | Pub/Sub              |
+| Pending reminder    | EventBridge + Lambda   | Pub/Sub              |
+| Subscription error  | EventBridge + Lambda   | Pub/Sub              |
 
-#### Capas de integración y clases utilizadas
+#### Integration layers and classes used
 
-- `PagoService`: Emite eventos  
-- `NotificadorService`: Suscriptor de eventos  
-- `EventoService`: Orquestador de flujos  
-- `LoggerService`: Persistencia de eventos y errores  
+- `PagoService`: Emits events  
+- `NotificadorService`: Event subscriber  
+- `EventoService`: Flow orchestrator  
+- `LoggerService`: Event and error persistence  
 
 ---
 
 ### 5. API Gateway (Security & Scalability)
 
-#### ¿Es necesario un API Gateway?
+#### Is an API Gateway necessary?
 
-Sí. Se utiliza **AWS API Gateway** para gestionar el tráfico hacia el backend serverless.
+Yes. **AWS API Gateway** is used to manage traffic to the serverless backend.
 
-#### Servicio cloud seleccionado
+#### Selected cloud service
 
-- **AWS API Gateway**: Se integra nativamente con AWS Lambda y Cognito.
+- **AWS API Gateway**: Natively integrates with AWS Lambda and Cognito.
 
-#### ¿Cómo apoya la seguridad y escalabilidad?
+#### How does it support security and scalability?
 
-##### Seguridad
+##### Security
 
-- Autenticación con JWT vía AWS Cognito.  
-- Validación de CORS.  
-- Throttling y cuotas por usuario o IP.  
-- Integración con AWS WAF para reglas personalizadas.
+- Authentication with JWT via AWS Cognito.  
+- CORS validation.  
+- Throttling and quotas per user or IP.  
+- Integration with AWS WAF for custom rules.
 
-##### Escalabilidad
+##### Scalability
 
-- Escala horizontalmente de forma automática.  
-- Maneja cientos o miles de requests concurrentes sin intervención manual.  
-- Provee caching, logging y métricas para optimización continua.
+- Automatically scales horizontally.  
+- Handles hundreds or thousands of concurrent requests without manual intervention.  
+- Provides caching, logging, and metrics for continuous optimization.
 
-///////////////////////////////
 
 ### Data Layer Design
 
