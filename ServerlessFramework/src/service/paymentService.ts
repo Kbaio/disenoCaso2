@@ -42,7 +42,4 @@ export class PaymentService {
 
         return paymentResult;
     }
-
-
-    // Otros métodos, como actualización de balance, etc. pueden ir aquí si es necesario
 }

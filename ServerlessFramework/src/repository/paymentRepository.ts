@@ -51,7 +51,6 @@ class PaymentRepository {
             throw new Error('Insufficient payment for this service');
         }
 
-        // Aquí podríamos agregar la lógica de guardar el pago, por ahora devolvemos un mensaje de éxito
         return `Payment of ${amount}$ processed successfully for ${serviceName}`;
     }
 }

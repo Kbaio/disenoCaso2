@@ -495,6 +495,149 @@ Sí. Se utiliza **AWS API Gateway** para gestionar el tráfico hacia el backend 
 
 ### Data Layer Design
 
+### 1. data layer design
+
+#### a) Data topology
+        
+**Cloud service technology:** 
+
+OLTP (with AWS PostgreSQL)
+
+**Object-oriented design patterns:**  Patterns such as Repository, to encapsulate the data base access.
+
+**Class layers for data access:** Repositories to handle data operations (PagoRepositoryImpl, UsuarioRepositoryImpl, CuentaRepositoryImpl)
+
+**Configuration policies/rules:** automatic backups, AWS RDS replication, automatic failover
+
+**Expected benefits:** good scalability, cost reduction, high availability, efficiency in developement
+
+#### b) Big Data Repository
+
+**Cloud service technology:**  AWS S3 as Data Lake
+
+**Object‑oriented design patterns:** Adapter/Facade: wrap AWS SDK calls for S3. Singleton: ensure a single shared client instance for each AWS service
+
+**Class layers for data access:** Repository layer (generic DataLakeRepository interface) that provides an implementation that uses the Adapter/Facade to read/write files in S3
+
+**Configuration policies/rules:** S3 rules: transition infrequently accessed data
+
+**Expected benefits:** Scalability: virtually unlimited storage in S3
+Cost efficiency: low‑cost object storage with tiered archiving
+
+#### c) Relational Database
+
+The reason to use the relational data base is explained in point a, but the reasons are that it allows complex requests, the well structured data model, good consistency, and also that it is very secure.
+
+#### d) Data Access Permissions
+
+**Cloud service technology:**AWS Cognito for user authentication and identity pools, with postgreSQL (RLS) for other boundaries.
+
+**Object‑oriented design patterns:** Singleton (AuthService) for single entry point for validating
+
+**Class layers for data access:** Repositories like PagoRepositoryImpl, assume that those filters have already been applied.
+
+**Configuration policies/rules:** encryption for RDS, also enable CloudWatch Logs + RDS audit logs for all data‑access events
+
+**Expected benefits:** manteinability, multiple layers of verification, isolation.
+
+#### e) fail tolerance and recover model and politics
+
+**Cloud service technology:** AWS CloudWatch for alarms, metrics and logs, AWS X-Ray for fail tracing, AWS fast failover for PostgreSQL
+
+**Object‑oriented design patterns:** Observer to notify an alarm service, and Singleton to ensure a unic instance of failover manager.
+
+**Class layers for data access:** Alerting service using CloudWatch and AWS X-Ray to send notifications, failover manager that promotes the RDS replicate. 
+
+**Configuration policies/rules:** Backups (continuos backups every determined time), CLoudWatch alarms.
+
+**Expected benefits:** High availability, fast recovery, visibility and monitoring
+
+### 2. object oriented design - programming 
+
+#### a) Transactional via SQL Statements 
+
+**Cloud service technology:** AWS RDS PostgreSQL
+
+**Object‑oriented design patterns:** RepositoryImpl repositories expose CRUDs and other queries.  
+
+**Class layers for data access:** Repositories like PagoRepositoryImpl, UsuarioRepositoryImpl, CuentaRepositoryImpl, expose different methods like commits or rollbacks. multiple repositories can be accesed in a single transaction context.
+
+**Configuration policies/rules:** Timeouts (auto rollbacks), Isolation, retry policies (after a series of failures) 
+
+**Expected benefits:** Testability and manteinability, portability, faster developemenet
+
+#### b) use of ORM
+
+**Cloud service technology:** AWS RDS PostgreSQL
+
+**Object‑oriented design patterns:** entities map to tables and PagoRepositoryImpl, UsuarioRepositoryImpl, CuentaRepositoryImpl extend TypeORMs  
+
+**Class layers for data access:** Services call repository methods when needed, also define different entities with decorators.
+
+**Configuration policies/rules:** validation (use class validators entities, to ensure the data), 
+
+**Expected benefits:** Productivity, manteinability (centralized entity definitions simplify evolutions of the data model), consistency (uniform data access patterns across modules and services).
+
+#### c) Layers for connection control, concurrency, data mapping, and object/data models
+
+**Cloud service technology:** built-in connection pool in AWS PostgreSQL
+
+**Object‑oriented design patterns:** Singletion (a single shared pool of db connections), data mapper to map between entity and object model, factory model to create and configure connections from the pool.
+
+**Class layers for data access:** connection layer, mapping layer, repository layer, data object layer, domain model layer.
+
+**Configuration policies/rules:** Transaction isolation, mapping conventions, connection pool (set a max or idle time).
+
+**Expected benefits:** safe concurrency, separate concerns, manteinability, better performance.
+
+#### c2) pool use for connections
+
+**Cloud service technology:** AWS RDS PostgreSQL (with support for pooling connections, like RDS Proxy)
+
+**Object‑oriented design patterns:** Singletion (shared ConnectionPoolManager that ensures only one instance manages pool), Factory (ConnectionFactory  encapsulates creation of DB connection), optional use of RDS Proxy as an external manager.
+
+**Class layers for data access:** connection layer (initializes and manages, and provides connections), repository and service layer
+
+**Configuration policies/rules:** define a max size pool, connection timeout, validate connections, enable logs/metrics for monitoring
+
+**Expected benefits:** reduce of overhead, better scalability, centralized connection config to reduce errors or duplications.
+
+#### d) use of cache
+
+**Cloud service technology:** Redis (to quickly access most frequented data)
+
+**Object‑oriented design patterns:** check redis first, if not found the check data base, singleton (to ensure a single shared Redis cache).
+
+**Class layers for data access:** cache layer (RedisCacheManager, centralized cache), repository layer (PagoRepositoryImpl, UsuarioRepositoryImpl, and CuentaRepositoryImpl first check Redis > RedisCacheManager before the database)
+
+**Configuration policies/rules:** monitoring (check performance, memory usage, etc), persistance (use redis only if needed), use structured names for better and easier validations.
+
+**Expected benefits:** performance mainly, improved UX, cost efficiency.
+
+#### e) Native vs Interpreted Drivers
+
+**Cloud service technology:** AWS RDS (PostgreSQL) accessed via native drivers for performance and reliability.
+
+**Object‑oriented design patterns:** Strategy Pattern: used to define multiple query execution strategies
+
+**Class layers for data access:** Data lccess layer (for handling connections and query execution), RepositoryImpl classes rely on it
+
+**Configuration policies/rules:** native drivers for performance-critical operations and stored procedures, logging and monitoring enabled for both methods to track performance.
+
+**Expected benefits:** flexibility (allows using the best tool for each use case), efficiency
+
+#### f) data design
+
+**Cloud service technology:** AWS RDS with PostgreSQL as the primary relational database engine
+
+**Object‑oriented design patterns:** Repository pattern encapsulates query logic for each entity class,  
+
+**Class layers for data access:** repository layer, Data transfer layer, entity model.
+
+**Configuration policies/rules:** Normalization, naming conventions.
+
+**Expected benefits:** Clariry, reusability, manteinability, data integrity and scalability.
+
 ## Architecture Design
 
 ## Architecture Compliance Matrix
