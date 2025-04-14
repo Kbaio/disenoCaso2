@@ -50,23 +50,139 @@ The system will follow a N-Layer architecture, because it follows a separation o
 ## Frontend Design Specification
 
 
-### Authentication Platform //In-Progress
+### Authentication Platform
 
 a) login y password
 
 b) login y password automatic screen generation or SDK for screen generation
 
-c) compatible with your FE programming language
+c) The backend exposes a RESTful API that can be directly consumed by the mobile application developed in React Native.
 
-d) access by API available
+d) All services are available through secure HTTP endpoints with JSON responses, accessible from the mobile client.
 
 e) MFA and a sandbox for testing purpose
 
-- Using a demo code, proceed to test how the chosen platform works and how the login screen can be customized. Document this process in the MD file. The demo code must be use in the selected programming language of the FE.
+**Demo code and customization of login screen**
 
-- Using Postman, make API calls to simulate authentication with MFA. Document the process and save your own Postman collection for future review
+The selected platform for authentication and MFA implementation is **AWS Cognito**, due to its tight integration with AWS services, strong security model, and built-in MFA support. For the frontend, we used **React Native**, which was chosen as the mobile development framework for this project.
 
-- suggested platforms to look into: auth0, okta, cognito, MS entra, onelogin, firebase, veriam
+To test Cognito, we created a sandbox environment using **AWS Amplify** and the `Authenticator` component. This allowed us to simulate a complete user sign-up/sign-in flow and test login screen customization.
+
+**Steps taken:**
+
+1. **Created a Cognito User Pool with SMS-based MFA enabled.**
+   - Go to the **AWS Cognito Console** and create a new user pool.
+   - Under **Multi-Factor Authentication (MFA)**, enable **SMS-based MFA** for added security.
+   - Configure the user pool settings, ensuring that SMS is available and the user can authenticate via MFA.
+
+2. **Set up AWS Amplify in the React Native project.**
+
+   To get started with **AWS Amplify** in a **React Native** project, install the required libraries:
+
+```bash
+   npm install aws-amplify @aws-amplify/ui-react-native
+```
+
+Then, configure AWS Amplify by editing the src/aws-exports.js file with the credentials from your AWS Cognito User Pool.
+    
+```bash
+    import { Amplify } from 'aws-amplify';
+    import awsconfig from './src/aws-exports';  // Your Amplify configuration file
+    Amplify.configure(awsconfig);
+```
+3. **Implemented the authentication UI in React Native.**
+    We used AWS Amplify's withAuthenticator component to easily implement the authentication screen and MFA:
+
+```bash
+    import React from 'react';
+    import { withAuthenticator } from '@aws-amplify/ui-react-native';
+
+    const App = () => {
+    return <HomeScreen />;
+    };
+
+    export default withAuthenticator(App);
+```
+This will generate a login screen with built-in authentication flow, including the option for SMS-based MFA if enabled.
+
+4. **Customized the login screen UI.**
+
+We adjusted fonts, colors, and button styles using the Amplify UI theme to match the application's branding.
+
+For example:
+
+```bash
+    import { Button } from '@aws-amplify/ui-react-native';
+
+    const CustomLoginButton = () => (
+    <Button 
+        title="Sign In"
+        style={{ backgroundColor: '#ff6347', borderRadius: 5 }}
+    />
+    );
+```
+
+**MFA Simulation with Postman**
+We tested the MFA process with AWS Cognito through Postman by simulating the API interactions.
+
+1. **Initiate authentication:**
+First, we send a POST request to the Cognito login endpoint:
+- Method: POST
+- Endpoint: https://<your-cognito-domain>.auth.<region>.amazoncognito.com/login
+- Request Body:
+
+```bash
+    {
+    "username": "testuser",
+    "password": "YourPassword123!"
+    }
+```
+This initiates the authentication process and returns a challenge, which in this case is an SMS MFA challenge.
+
+2. **Receive MFA challenge:**
+
+Cognito responds with a challenge of type **SMS_MFA** and a session token.
+
+3. **Respond to MFA challenge:**
+We then send a second POST request to respond to the MFA challenge.
+- Method: POST
+- Endpoint: https://<your-cognito-domain>.auth.<region>.amazoncognito.com/respond-to-auth-challenge
+```bash
+    {
+    "ChallengeName": "SMS_MFA",
+    "Session": "<session-token>",
+    "ChallengeResponses": {
+        "USERNAME": "testuser",
+        "SMS_MFA_CODE": "123456"
+    }
+    }
+```
+If the MFA code is correct, Cognito responds with valid authentication tokens (idToken, accessToken, refreshToken).
+
+4. **Postman Collection:**
+After testing the MFA flow, we saved the entire collection of API requests in Postman for future reference. The collection includes the login request, MFA challenge, and MFA response request.
+
+You can export and save this collection in Postman for later use.
+
+- Export the Postman collection: In Postman, click on the collection name > Export > Collection v2.1. Save the file for future review.
+
+
+**Platforms Considered**
+
+- **Auth0**: Flexible UI customization and supports multiple MFA factors, including TOTP and SMS.
+
+- **Okta**: Robust identity management platform, especially suited for enterprise-level applications.
+
+- **Cognito**: Chosen platform for its seamless integration with AWS services and MFA support.
+
+- **MS Entra (Azure AD)**: Ideal for environments heavily reliant on Microsoft-based infrastructures.
+
+- **OneLogin**: Focused on enterprise SSO and user provisioning, also supports MFA.
+
+- **Firebase Auth**: Simplifies authentication integration, but has limited MFA support.
+
+- **Veriam**: Specializes in identity verification, which was less relevant for this project.
+
 
 ## Visual Components
 
