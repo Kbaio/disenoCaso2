@@ -331,7 +331,19 @@ We adopt tools that facilitate the implementation and maintenance of visual comp
 
 ## Final FE architecture diagram
 
-// En creacion
+The following diagram illustrates the comprehensive frontend architecture for Billbot, an AI voice-activated payment assistant. This architecture follows a layered design that emphasizes separation of concerns, high cohesion, and low coupling between components, adhering to SOLID principles throughout.
+The architecture is organized into five distinct layers:
+
+* UI Presentation Layer: Using Atomic Design methodology and React Native components to build a cohesive, responsive user interface across platforms.
+* View Model Layer (MVVM): Implementing the Model-View-ViewModel pattern to separate UI from business logic, with dedicated controllers, models, and configuration objects.
+* Service Layer: Handling API connections, notifications, and core business services that power the application's payment functionality.
+* Security Layer: Managing authentication and authorization through Cognito integration with 2FA, ensuring secure access to payment operations.
+* External Integration Layer: Connecting to third-party payment processors, banking APIs, and cloud services.
+
+The architecture employs several design patterns including Observer for notifications, Singleton for authentication services, and Factory for creating various service implementations. Communication between layers follows a strict top-down approach with clearly defined interfaces, allowing for better testability and maintenance.
+As shown in the diagram below, each component has specific responsibilities and communicates with others through well-defined paths, ensuring a robust foundation for scaling the application's functionality.
+
+![alt text](image.png)
 
 # Backend Design Specifications
 
@@ -826,5 +838,82 @@ The reason to use the relational data base is explained in point a, but the reas
 ## Architecture Design
 
 ## Architecture Compliance Matrix
+
+
+This matrix shows how architectural components fulfill the system's functional and non-functional requirements.
+
+## Compliance Matrix
+
+| Requirements vs. Components | Frontend (React Native) | Atomic Design | MVVM | API Gateway | Auth Service (Cognito) | Backend (NestJS) | Services & Repositories | AWS Lambda | PostgreSQL DB | AWS S3 | Redis Cache | AWS CloudWatch | AWS SNS |
+|----------------------------|------------------------|--------------|------|-------------|------------------------|------------------|--------------------------|------------|--------------|--------|-------------|----------------|---------|
+| **Functional Requirements** |                        |              |      |             |                        |                  |                          |            |              |        |             |                |         |
+| Voice Interaction          | X                      | X            | X    |             |                        | X                |                          | X          |              |        |             |                |         |
+| Payment Configuration      | X                      | X            | X    | X           | X                      | X                | X                        | X          | X            |        | X           |                |         |
+| Payment Execution          | X                      |              | X    | X           | X                      | X                | X                        | X          | X            |        | X           | X              | X       |
+| **Non-Functional Requirements** |                    |              |      |             |                        |                  |                          |            |              |        |             |                |         |
+| Scalability                | X                      |              |      | X           | X                      | X                | X                        | X          | X            | X      | X           | X              | X       |
+| Security                   | X                      |              |      | X           | X                      | X                | X                        | X          | X            | X      |             | X              |         |
+| Performance                | X                      | X            | X    | X           |                        | X                | X                        | X          | X            |        | X           | X              |         |
+| Availability               |                        |              |      | X           | X                      | X                |                          | X          | X            | X      | X           | X              | X       |
+| Compatibility              | X                      | X            |      |             |                        |                  |                          |            |              |        |             |                |         |
+| Usability                  | X                      | X            | X    |             |                        |                  |                          |            |              |        |             |                |         |
+
+## Compliance Analysis
+
+### Key Functional Requirements
+
+1. **Voice Interaction**
+   - Frontend React Native: UI for voice capture
+   - Atomic Design: Modular components for voice interface
+   - MVVM: Separation of voice processing logic
+   - Backend (NestJS): Voice command processing
+   - AWS Lambda: Serverless functions for NLP
+
+2. **Payment Configuration**
+   - Frontend: Interfaces for account and payment setup
+   - API Gateway: Secure management of configuration requests
+   - Auth Service (Cognito): Authentication for sensitive operations
+   - Services & Repositories: Business logic and storage
+   - PostgreSQL: Persistence of configurations
+   - Redis Cache: Fast access to frequent configurations
+
+3. **Payment Execution**
+   - API Gateway: Access control for payment operations
+   - Auth Service: Authentication to authorize payments
+   - NestJS Backend: Payment processing logic
+   - AWS Lambda: Scalable transaction processing
+   - AWS SNS: Confirmation notifications
+   - AWS CloudWatch: Transaction monitoring
+
+### Non-Functional Requirements
+
+1. **Scalability**
+   - AWS Lambda: Automatic serverless scaling
+   - API Gateway: High concurrency management
+   - PostgreSQL: Configured for high load
+   - AWS CloudWatch: Performance monitoring
+
+2. **Security**
+   - Auth Service (Cognito): 2FA, token management
+   - API Gateway: Rate limiting, authorization
+   - NestJS: Security middleware, validation
+   - PostgreSQL: Encryption, access policies
+
+3. **Performance**
+   - Redis Cache: Fast access to frequent data
+   - API Gateway: Route optimization
+   - AWS Lambda: On-demand processing
+   - NestJS: Query optimization
+
+4. **Availability**
+   - AWS Lambda: High serverless availability
+   - PostgreSQL: Replication and failover
+   - AWS CloudWatch: Alerts and monitoring
+   - AWS SNS: System notifications
+
+5. **Compatibility and Usability**
+   - React Native: Cross-platform support
+   - Atomic Design: Consistent and adaptable interfaces
+   - MVVM: Clear separation facilitating maintenance
 
 
