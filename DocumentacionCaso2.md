@@ -877,6 +877,8 @@ The reason to use the relational data base is explained in point a, but the reas
 
 ## Architecture Design
 
+![Diagram](Architecuturediagram.png)
+
 ## Architecture Compliance Matrix
 
 This matrix shows how architectural components fulfill the system's functional and non-functional requirements.
