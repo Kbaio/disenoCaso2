@@ -38,60 +38,75 @@ Billbot is an AI voice-activated payment assistant that allows users to schedule
 
 ## Client Architecture
 
-The system will follow a N-Layer architecture, because it follows a separation of tasks, where the frontend (React Native) will communicate with the backend (Node.js/NestJS).
+The system will follow an N-Layer architecture, as it promotes a clear separation of concerns. The frontend (React Native) will communicate with the backend (Node.js/NestJS) through secure APIs.
 
-    a) Mobile Developement = Native
-    Even though the application uses JavaScript, it generates native code for Android and IOS.
+The application utilizes a native mobile architecture based on React Native, allowing a shared codebase between iOS and Android. Rendering is managed entirely on the client side, where the app uses native UI components to deliver responsive content across both platforms.
 
-    b) Side Rendering = client-side rendering
-    Because the aplication is dynamic and interactive, and it involves the browser receiving a minimal HTML file and using JavaScript to render content dynamically.
+All interaction and presentation logic is handled on the client side, with the app making API requests to communicate with the backend.
 
 ## Frontend Design Specification
 
 ### Authentication Platform
 
-a) login y password
-
-b) login y password automatic screen generation or SDK for screen generation
-
-c) The backend exposes a RESTful API that can be directly consumed by the mobile application developed in React Native.
-
-d) All services are available through secure HTTP endpoints with JSON responses, accessible from the mobile client.
-
-e) MFA and a sandbox for testing purpose
-
 **Demo code and customization of login screen**
 
 The selected platform for authentication and MFA implementation is **AWS Cognito**, due to its tight integration with AWS services, strong security model, and built-in MFA support. For the frontend, we used **React Native**, which was chosen as the mobile development framework for this project.
 
-To test Cognito, we created a sandbox environment using **AWS Amplify** and the `Authenticator` component. This allowed us to simulate a complete user sign-up/sign-in flow and test login screen customization.
+To test Cognito, we created a sandbox environment using **AWS Amplify** and the `Authenticator` component. This allowed us to simulate a complete user sign-up/sign-in flow and test login screen customization.}
 
 **Steps taken:**
 
-1. **Created a Cognito User Pool with SMS-based MFA enabled.**
+1. **Set up AWS Amplify in the React Native project.**
 
-   - Go to the **AWS Cognito Console** and create a new user pool.
-   - Under **Multi-Factor Authentication (MFA)**, enable **SMS-based MFA** for added security.
-   - Configure the user pool settings, ensuring that SMS is available and the user can authenticate via MFA.
-
-2. **Set up AWS Amplify in the React Native project.**
-
-   To get started with **AWS Amplify** in a **React Native** project, install the required libraries:
+   To get started with **AWS Amplify** in a **React Native** project, first we installed amplify with the command:
 
 ```bash
-   npm install aws-amplify @aws-amplify/ui-react-native
+    npm install -g @aws-amplify/cli
 ```
 
-Then, configure AWS Amplify by editing the src/aws-exports.js file with the credentials from your AWS Cognito User Pool.
+Then, configure AWS Amplify and integrate it in the project by using the following command:
 
 ```bash
-    import { Amplify } from 'aws-amplify';
-    import awsconfig from './src/aws-exports';  // Your Amplify configuration file
-    Amplify.configure(awsconfig);
+    amplify configure
+    amplify init
 ```
 
-3. **Implemented the authentication UI in React Native.**
-   We used AWS Amplify's withAuthenticator component to easily implement the authentication screen and MFA:
+2. **Add the Cognito authentication service**
+   After integrating amplify in the project we can run the command:
+
+```bash
+    amplify add auth
+```
+
+This will prompt the configuration for the authentication service.
+in this specific project we used the following:
+
+- What authentication method do you want to use?: Identity Pool and User Pool
+- Do you want to enable MFA?: Yes (ON)
+- Enabled MFA methods: SMS and TOTP
+
+- Sign-in attributes: EMAIL and PHONE_NUMBER
+
+- Required attributes: email and phone_number
+
+- SMS verification message: "Your verification code is {####}"
+
+- SMS authentication message: "Your authentication code is {####}"
+
+- Password policy: Minimum length of 8 characters, no special characters required.
+
+When that configuration is done, we ran the command:
+
+```bash
+    amplify push
+```
+
+3. **Install dependencies.**
+   Scince we are using the the hosted UI we need to install the libraries that are going to provide us with the Authenticator component:
+
+```bash
+    npm install aws-amplify @aws-amplify/ui-react-native
+```
 
 ```bash
     import React from 'react';
@@ -126,67 +141,112 @@ For example:
 **MFA Simulation with Postman**
 We tested the MFA process with AWS Cognito through Postman by simulating the API interactions.
 
-1. **Initiate authentication:**
+1. **Create new user:**
+   First we need to sign in a new user for us to authenticate later when we make the sign in request.
+
+- Method: POST
+- Endpoint: https://cognito-idp.us-east-1.amazonaws.com/
+
+This URL is used because it is the base endpoint for the Cognito Identity Provider service, and combined with specific headers, it allows us to interact with different Cognito actions.
+
+- Headers:
+  - Content-Type: application/x-amz-json-1.1
+  - X-Amz-Target: AWSCognitoIdentityProviderService.SignUp
+- Request body:
+
+```
+{
+  "ClientId": "your_app_client_id",
+  "Username": "exampleuser",
+  "Password": "ExamplePassword123!",
+  "UserAttributes": [
+    {
+      "Name": "email",
+      "Value": "exampleuser@email.com"
+    },
+    {
+      "Name": "phone_number",
+      "Value": "+50612345678"
+    }
+  ]
+}
+```
+
+2. **Confirm new sign up:**
+
+- Method: POST
+- Endpoint: https://cognito-idp.us-east-1.amazonaws.com/
+- headers:
+  - Content-Type: application/x-amz-json-1.1
+  - X-Amz-Target: AWSCognitoIdentityProviderService.ConfirmSignUp
+- Request Body:
+
+```
+{
+  "ClientId": "your_app_client_id",
+  "Username": "exampleuser",
+  "ConfirmationCode": "123456"
+}
+```
+
+Now that we have created a user, we can attempt authentication using this new user.
+
+3. **Initiate authentication:**
    First, we send a POST request to the Cognito login endpoint:
 
 - Method: POST
-- Endpoint: https://<your-cognito-domain>.auth.<region>.amazoncognito.com/login
+- Endpoint: https://cognito-idp.us-east-1.amazonaws.com/
+- Auth:
+  - Auth Type: AWS signature
+  - AWS acesskey: Your aws-access-key
+  - AWS SecretKey: Your aws-secret-key
+- Headers:
+  - Content-Type: application/x-amz-json-1.1
+  - X-Amz-Target: AWSCognitoIdentityProviderService.AdminInitiateAuth
 - Request Body:
 
 ```bash
+{
+    "AuthFlow": "ADMIN_NO_SRP_AUTH",
+    "ClientId": "CLIENT_ID_POOL",
+    "UserPoolId": "USERPOOL_ID",
+    "AuthParameters":
     {
-    "username": "testuser",
-    "password": "YourPassword123!"
+        "USERNAME": "exampleuser@email.com",
+        "PASSWORD": "safePassword123!"
     }
+}
 ```
 
 This initiates the authentication process and returns a challenge, which in this case is an SMS MFA challenge.
 
-2. **Receive MFA challenge:**
+4. **Receive MFA challenge:**
 
 Cognito responds with a challenge of type **SMS_MFA** and a session token.
 
-3. **Respond to MFA challenge:**
+5. **Respond to MFA challenge:**
    We then send a second POST request to respond to the MFA challenge.
 
 - Method: POST
-- Endpoint: https://<your-cognito-domain>.auth.<region>.amazoncognito.com/respond-to-auth-challenge
+- Endpoint: https://cognito-idp.us-east-1.amazonaws.com/
 
 ```bash
-    {
-    "ChallengeName": "SMS_MFA",
-    "Session": "<session-token>",
-    "ChallengeResponses": {
-        "USERNAME": "testuser",
-        "SMS_MFA_CODE": "123456"
-    }
-    }
+{
+  "ChallengeName": "SMS_MFA",
+  "ClientId": "CLIENT_ID_POOL",
+  "Session": "SESSION TOKEN"
+  "ChallengeResponses": {
+    "USERNAME": "exampleuser@email.com,
+    "SMS_MFA_CODE": "123456"
+  }
+}
+
 ```
 
 If the MFA code is correct, Cognito responds with valid authentication tokens (idToken, accessToken, refreshToken).
 
-4. **Postman Collection:**
-   After testing the MFA flow, we saved the entire collection of API requests in Postman for future reference. The collection includes the login request, MFA challenge, and MFA response request.
-
-You can export and save this collection in Postman for later use.
-
-- Export the Postman collection: In Postman, click on the collection name > Export > Collection v2.1. Save the file for future review.
-
-**Platforms Considered**
-
-- **Auth0**: Flexible UI customization and supports multiple MFA factors, including TOTP and SMS.
-
-- **Okta**: Robust identity management platform, especially suited for enterprise-level applications.
-
-- **Cognito**: Chosen platform for its seamless integration with AWS services and MFA support.
-
-- **MS Entra (Azure AD)**: Ideal for environments heavily reliant on Microsoft-based infrastructures.
-
-- **OneLogin**: Focused on enterprise SSO and user provisioning, also supports MFA.
-
-- **Firebase Auth**: Simplifies authentication integration, but has limited MFA support.
-
-- **Veriam**: Specializes in identity verification, which was less relevant for this project.
+6. **Postman Collection:**
+   After testing the MFA flow, we saved the entire collection of API requests in Postman for future reference. The collection includes the Sign up, Sign Up Confirmation, Sign in request, and MFA response request.
 
 ## Visual Components
 
