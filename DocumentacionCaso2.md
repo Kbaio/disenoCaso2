@@ -976,6 +976,23 @@ Design pattern:
 
     Singleton for ConnectionPoolManager to ensure a single shared instance manages the pool.
 
+Values to configure:
+
+    max_connections: 50    
+    Maximum number of concurrent connections managed by the pool.
+
+    idle_client_timeout: 1800 seconds (30 minutes)  
+    Maximum time an idle connection can stay open.
+
+    connection_borrow_timeout: 30 seconds  
+    Max wait time to borrow a connection from the pool.
+
+    init_query: "SELECT 1"
+    Query used to validate active connections.
+
+    enable_logging: "true"  
+    Enables monitoring and logging via Amazon CloudWatch.
+
 Policies:
 
     Set maximum pool size
@@ -1010,6 +1027,15 @@ Data access layers:
     
     Repositories query RedisCacheManager before hitting the database.
 
+The values to create are:
+
+| Enitity                   | Redis key example            | 
+| ------------------------- | ---------------------------- | 
+| Account list per user     | `user:5421:account`          | 
+| Payment record            | `payment:record:account:779` | 
+| Active session            | `session:token:abc123xyz`    | 
+
+
 Policies:
     
     Monitor performance and memory usage
@@ -1031,6 +1057,9 @@ Benefits:
 Technology:
     
     AWS RDS PostgreSQL accessed via native drivers for optimal performance.
+    
+Driver to use for Node.js environments is:
+    [`pg` (node-postgres)](https://www.npmjs.com/package/pg) 
 
 Patterns:
     
@@ -1038,7 +1067,7 @@ Patterns:
 
 Use:
 
-    Native drivers for critical queries and procedures
+    Native drivers (like pg) for critical queries and procedures
     
     monitored for performance.
 
@@ -1046,7 +1075,9 @@ Benefits:
     
     Greater efficiency
     
-    Flexibliity in query handling.
+    Flexibliity in query handling
+
+    Integrates better with PostgreSQL features
 
 #### f) data design
 
@@ -1057,6 +1088,48 @@ Technology:
 Patterns:
     
     Repository pattern to encapsulate query logic for each entity class.
+
+Key Tables design:
+
+users:
+
+``` sql
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,                        -- Unique user ID
+    email VARCHAR(255) UNIQUE NOT NULL,                -- Unique email
+    password_hash TEXT NOT NULL,                       -- Hashed password
+    first_name VARCHAR(100),                           -- User's first name
+    last_name VARCHAR(100),                            -- User's last name
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,  -- When the account was created
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP   -- Last account update
+);
+```
+accounts:
+
+``` sql
+CREATE TABLE accounts (
+    account_id SERIAL PRIMARY KEY,                            -- Unique account ID
+    user_id INT REFERENCES users(user_id) ON DELETE CASCADE,  -- Foreign key to users
+    balance DECIMAL(10, 2) DEFAULT 0.00,                      -- Account balance
+    status VARCHAR(50) DEFAULT 'active',                      -- Account status (active, suspended, etc.)
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,         -- When the account was created
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP          -- Last account update
+);
+```
+
+sessions (manages active session, important to keep securuty):
+
+```sql
+CREATE TABLE sessions (
+    session_id SERIAL PRIMARY KEY,                            -- Unique session ID
+    user_id INT REFERENCES users(user_id) ON DELETE CASCADE,  -- Foreign key to users
+    session_token TEXT UNIQUE NOT NULL,                       -- Unique token for session
+    ip_address INET,                                          -- User's IP address during the session
+    user_agent TEXT,                                          -- User's browser or device information
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,         -- When the session was created
+    expires_at TIMESTAMPTZ                                    -- When the session expires
+);
+```
 
 Class layers:
     
