@@ -652,13 +652,10 @@ These are the technologies and services we will use:
 
 For the AWS Lambda, the following configuration is used:
 
-- **Memory Allocation**: 512 MB for lightweight functions and 1024 MB for more intensive ones.
-- **Runtime**: Node.js 22.x, compatible with the project's dependencies.
-- **Maximum Execution Time**: 10 seconds for most functions, adjusted based on complexity.
-- **Region**: us-east-2, selected for its low latency and high availability.
-- **Architecture**: arm64, leveraging AWS Graviton2 processors for better cost efficiency and energy savings.
-
-These configurations ensure a balance between cost and performance, allowing the functions to scale automatically based on demand.
+- **Memory**: 128 MB
+- **Maximum Execution Time**: 5 min
+- **Region**: us-east-2 (US East (Ohio))
+- **Architecture**: arm64
 
 **RDS PostgreSQL**
 
