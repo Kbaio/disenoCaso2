@@ -654,7 +654,7 @@ For the AWS Lambda, the following configuration is used:
 
 - **Memory**: 128 MB
 - **Maximum Execution Time**: 5 min
-- **Region**: us-east-2 (US East (Ohio))
+- **Region**: us-east-2
 - **Architecture**: arm64
 
 **RDS PostgreSQL**
