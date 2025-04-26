@@ -32,7 +32,7 @@ Billbot is an AI voice-activated payment assistant that allows users to schedule
     AWS X-Ray for errors and tracking services and latency
 
     Testing:
-        React Testing Library for unit tests and frontend integration.
+        React Testing Library and Jest for unit tests and frontend integration.
 
         Postman for API's validation
 
@@ -141,8 +141,20 @@ For example:
 **MFA Simulation with Postman**
 We tested the MFA process with AWS Cognito through Postman by simulating the API interactions.
 
-1. **Create new user:**
-   First we need to sign in a new user for us to authenticate later when we make the sign in request.
+Since we are goin to be interacting with the AWS Cognito Identity Provider we will be using the following url:
+
+**URL** : https://cognito-idp.us-east-1.amazonaws.com/
+
+**Breakdown:**
+
+- **https://** → Protocol HTTPS
+- **cognito-idp** → Subdomain: Cognito Identity Provider
+- **us-east-1** → AWS Region: in this case we are using the us-east-1 region.
+- **amazonaws.com** → AWS main domain.
+
+### 1. **Create new user:**
+
+First we need to sign in a new user for us to authenticate later when we make the sign in request.
 
 - Method: POST
 - Endpoint: https://cognito-idp.us-east-1.amazonaws.com/
@@ -172,7 +184,7 @@ This URL is used because it is the base endpoint for the Cognito Identity Provid
 }
 ```
 
-2. **Confirm new sign up:**
+### 2. **Confirm new sign up:**
 
 - Method: POST
 - Endpoint: https://cognito-idp.us-east-1.amazonaws.com/
@@ -191,8 +203,9 @@ This URL is used because it is the base endpoint for the Cognito Identity Provid
 
 Now that we have created a user, we can attempt authentication using this new user.
 
-3. **Initiate authentication:**
-   First, we send a POST request to the Cognito login endpoint:
+### 3. **Initiate authentication:**
+
+First, we send a POST request to the Cognito login endpoint:
 
 - Method: POST
 - Endpoint: https://cognito-idp.us-east-1.amazonaws.com/
@@ -220,12 +233,13 @@ Now that we have created a user, we can attempt authentication using this new us
 
 This initiates the authentication process and returns a challenge, which in this case is an SMS MFA challenge.
 
-4. **Receive MFA challenge:**
+### 4. **Receive MFA challenge:**
 
 Cognito responds with a challenge of type **SMS_MFA** and a session token.
 
-5. **Respond to MFA challenge:**
-   We then send a second POST request to respond to the MFA challenge.
+### 5. **Respond to MFA challenge:**
+
+We then send a second POST request to respond to the MFA challenge.
 
 - Method: POST
 - Endpoint: https://cognito-idp.us-east-1.amazonaws.com/
@@ -236,7 +250,7 @@ Cognito responds with a challenge of type **SMS_MFA** and a session token.
   "ClientId": "CLIENT_ID_POOL",
   "Session": "SESSION TOKEN"
   "ChallengeResponses": {
-    "USERNAME": "exampleuser@email.com,
+    "USERNAME": "exampleuser@email.com",
     "SMS_MFA_CODE": "123456"
   }
 }
@@ -244,9 +258,6 @@ Cognito responds with a challenge of type **SMS_MFA** and a session token.
 ```
 
 If the MFA code is correct, Cognito responds with valid authentication tokens (idToken, accessToken, refreshToken).
-
-6. **Postman Collection:**
-   After testing the MFA flow, we saved the entire collection of API requests in Postman for future reference. The collection includes the Sign up, Sign Up Confirmation, Sign in request, and MFA response request.
 
 ## Visual Components
 
@@ -367,8 +378,32 @@ We adopt tools that facilitate the implementation and maintenance of visual comp
 
 ### 4. Platform Standards
 
-- Use of `cross-platform` design principles.
-- Visual components like buttons, lists, and text fields follow guidelines that ensure a coherent interface without requiring adjustments between platforms.
+The application will be developed using **React Native** with the **Expo SDK**, targeting modern mobile platforms and following a set of standards to ensure consistency, compatibility, and performance across all devices.
+
+**Target Platforms**
+
+- **iOS** : iOS 15.1 or higher.
+- **Android** : Android 7.0 or higher.
+
+**Frameworks and Versions**
+
+- **React Native** : v0.76.9 (Stable version specified by the Expo SDK)
+- **Expo SDK** : v52.0.46.
+- **AWS Amplify** : V6.14.3
+
+**Linting and Formating Standards**
+
+- **Linter** : ESlint
+- **Prettier**
+
+**Testing**
+
+- **Jest** : v29.0.0
+- `@testing-library/react-native`: v12.1.5
+
+**App Building, Distribution and Updates**: Managed with **EAS Build** `eas-cli@7.1.0` or higher.
+
+---
 
 ### 5. Complementary Modules
 
@@ -640,7 +675,7 @@ Applied in abstract services that define reusable common flows.
 
 ---
 
-### 2. Serverless, Cloud, On-Premise, or Hybrid?
+### 2. Cloud Integration
 
 A **Serverless cloud solution (AWS)** is adopted for its automatic scalability, cost efficiency, and ease of integration.
 
@@ -688,7 +723,7 @@ These are the frameworks, libraries, and languages we will use:
 
 | Technology   | Role              | Main Advantage                                  |
 | ------------ | ----------------- | ----------------------------------------------- |
-| Node.js      | Backend runtime   | Non-blocking I/O, high performance in the cloud |
+| Node.js      | Backend runtime   | Non-blockng I/O, high performance in the cloud  |
 | NestJS       | Backend framework | Modular, supports MVC, scalable                 |
 | TypeScript   | Base language     | Strong typing, maintainability, and scalability |
 | PostgreSQL   | Database          | ACID integrity, complex queries                 |
@@ -696,7 +731,7 @@ These are the frameworks, libraries, and languages we will use:
 
 ---
 
-### 3. Service vs. Microservices?
+### 3. Service based architecture
 
 A **service-based architecture** is used to facilitate responsibility separation and enable progressive scalability.
 
@@ -744,7 +779,7 @@ The **SemVer** (Semantic Versioning) convention is followed: `MAJOR.MINOR.PATCH`
 
 ---
 
-### 4. Event-Driven, Queues, Brokers, Producer/Consumer, Pub/Sub?
+### 4. Event-Driven Architecture and Pub/Sub Integration
 
 #### Parts requiring these architectures
 
@@ -771,15 +806,7 @@ The **SemVer** (Semantic Versioning) convention is followed: `MAJOR.MINOR.PATCH`
 
 ### 5. API Gateway (Security & Scalability)
 
-#### Is an API Gateway necessary?
-
-Yes. **AWS API Gateway** is used to manage traffic to the serverless backend.
-
-#### Selected cloud service
-
-- **AWS API Gateway**: Natively integrates with AWS Lambda and Cognito.
-
-#### How does it support security and scalability?
+**AWS API Gateway**: is used to manage traffic to the serverless backend. It natively integrates with AWS Lambda and Cognito, providing a secure and scalable entry point for the application’s API.
 
 ##### Security
 
@@ -899,17 +926,17 @@ Class layers for data access:
 Policies:
 
     Auto rollbacks on timeout
-    
+
     isolation levels set by default
-    
+
     retry on failure logic applied at service level
 
 Benefits:
 
     Data consistency
-    
+
     better testability
-    
+
     portable and maintainable transaction logic
 
 #### b) use of ORM
@@ -919,15 +946,15 @@ ORM:
     TypeORM with AWS RDS PostgreSQL.
 
 Patterns:
-    
+
     Entity-repository pattern
-    
+
     repositories extend TypeORM base classes.
 
 Class layers:
-    
+
     Entities defined with decorators
-    
+
     services interact via repositories.
 
 Policies:
@@ -935,11 +962,11 @@ Policies:
     Validation at the entity level using class-validator.
 
 Benefits:
-    
+
     Higher developer productivity
-    
+
     centralized schema control
-    
+
     consistent data access.
 
 #### c) Layers for connection control, concurrency, data mapping, and object/data models
@@ -949,25 +976,25 @@ Cloud service:
     AWS RDS PostgreSQL with built-in connection pooling.
 
 Design patterns:
-    
+
     Singleton for managing a shared pool
-    
+
     Factory for creating connections.
 
 Policies:
-    
+
     Transaction isolation
-    
+
     mapping conventions
-    
+
     connection limits (max/idle time).
 
 Benefits:
-    
+
     Thread-safe access
-    
+
     improved performance
-    
+
     clear separation of concerns.
 
 #### c2) pool use for connections
@@ -982,37 +1009,37 @@ Design pattern:
 
 Values to configure:
 
-    max_connections: 50    
+    max_connections: 50
     Maximum number of concurrent connections managed by the pool.
 
-    idle_client_timeout: 1800 seconds (30 minutes)  
+    idle_client_timeout: 1800 seconds (30 minutes)
     Maximum time an idle connection can stay open.
 
-    connection_borrow_timeout: 30 seconds  
+    connection_borrow_timeout: 30 seconds
     Max wait time to borrow a connection from the pool.
 
     init_query: "SELECT 1"
     Query used to validate active connections.
 
-    enable_logging: "true"  
+    enable_logging: "true"
     Enables monitoring and logging via Amazon CloudWatch.
 
 Policies:
 
     Set maximum pool size
-    
+
     connection timeout
-    
+
     validate active connections
-    
+
     enable monitoring metrics.
 
 Expected benefits:
 
     Improved scalability
-    
+
     reduced overhead from reconnections
-    
+
     centralized and maintainable configuration.
 
 #### d) use of cache
@@ -1022,63 +1049,62 @@ Technology:
     Redis, for frequently accessed data.
 
 Patterns:
-    
+
     Read-through cache pattern
-    
+
     Singleton for shared Redis manager.
 
 Data access layers:
-    
+
     Repositories query RedisCacheManager before hitting the database.
 
 The values to create are:
 
-| Enitity                   | Redis key example            | 
-| ------------------------- | ---------------------------- | 
-| Account list per user     | `user:5421:account`          | 
-| Payment record            | `payment:record:account:779` | 
-| Active session            | `session:token:abc123xyz`    | 
-
+| Enitity               | Redis key example            |
+| --------------------- | ---------------------------- |
+| Account list per user | `user:5421:account`          |
+| Payment record        | `payment:record:account:779` |
+| Active session        | `session:token:abc123xyz`    |
 
 Policies:
-    
+
     Monitor performance and memory usage
-    
+
     use structured cache keys
-    
+
     apply cache only to selected high-demand data.
 
 Benefits:
-    
+
     Faster response times
-    
+
     improved user experience
-    
+
     reduced database load.
 
 #### e) Native vs Interpreted Drivers
 
 Technology:
-    
+
     AWS RDS PostgreSQL accessed via native drivers for optimal performance.
-    
+
 Driver to use for Node.js environments is:
-    [`pg` (node-postgres)](https://www.npmjs.com/package/pg) 
+[`pg` (node-postgres)](https://www.npmjs.com/package/pg)
 
 Patterns:
-    
+
     Strategy Pattern to switch between execution methods as needed.
 
 Use:
 
     Native drivers (like pg) for critical queries and procedures
-    
+
     monitored for performance.
 
 Benefits:
-    
+
     Greater efficiency
-    
+
     Flexibliity in query handling
 
     Integrates better with PostgreSQL features
@@ -1090,14 +1116,14 @@ Technology:
     AWS RDS with PostgreSQL as the primary relational database engine.
 
 Patterns:
-    
+
     Repository pattern to encapsulate query logic for each entity class.
 
 Key Tables design:
 
 users:
 
-``` sql
+```sql
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,                        -- Unique user ID
     email VARCHAR(255) UNIQUE NOT NULL,                -- Unique email
@@ -1108,9 +1134,10 @@ CREATE TABLE users (
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP   -- Last account update
 );
 ```
+
 accounts:
 
-``` sql
+```sql
 CREATE TABLE accounts (
     account_id SERIAL PRIMARY KEY,                            -- Unique account ID
     user_id INT REFERENCES users(user_id) ON DELETE CASCADE,  -- Foreign key to users
@@ -1136,31 +1163,31 @@ CREATE TABLE sessions (
 ```
 
 Class layers:
-    
+
     Repository layer
-    
+
     Data transfer layer
-    
+
     Entity model.
 
 Configuration policies/rules:
-    
+
     Normalization
-    
+
     Naming conventions
-    
+
     Maintaining clarity in schema design.
 
 Expected benefits:
-    
+
     Improved clarity
-    
+
     Reusability
-    
+
     Maintainability
-    
+
     Data integrity
-    
+
     scalability
 
 ## Architecture Design
