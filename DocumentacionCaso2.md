@@ -1,7 +1,7 @@
 # System Name: Billbot
 
 - David Salazar Rodriguez - 2019000145
-- Gabriel Gutiérrez Mata  - 2022437833
+- Gabriel Gutiérrez Mata - 2022437833
 - Fabricio Picado Alvarado - 2022104933
 - Jefferson Salas Cordero - 2022437576
 
@@ -10,22 +10,23 @@
 Billbot is an AI voice-activated payment assistant that allows users to schedule and execute recurring payments seamlessly. By integrating banking APIs and payment processors, Billbot automates transactions and provides a user-friendly experience for managing financial commitments.
 
 ## Stack
+
     React Native
 
     Cognito - 2FA
-    
+
     Node.js (NestJS) / Lambda in conjunction API gateaway
-    
+
     PostgreSQL as the database.
-    
+
     API´s:
      Plaid / TrueLayer to securely connect the bank accounts.
      Stripe / PayPal API to manage payments and subscriptions within the app.
-    
+
     AWS for hosting management.
 
     Cognito to handle 2FA
-    
+
     AWS CloudWatch for error logs, and infrastructure monitoring and metrics
 
     AWS X-Ray for errors and tracking services and latency
@@ -35,20 +36,17 @@ Billbot is an AI voice-activated payment assistant that allows users to schedule
 
         Postman for API's validation
 
-
 ## Client Architecture
 
 The system will follow a N-Layer architecture, because it follows a separation of tasks, where the frontend (React Native) will communicate with the backend (Node.js/NestJS).
 
-    a) Mobile Developement = Native 
+    a) Mobile Developement = Native
     Even though the application uses JavaScript, it generates native code for Android and IOS.
 
-    b) Side Rendering = client-side rendering 
+    b) Side Rendering = client-side rendering
     Because the aplication is dynamic and interactive, and it involves the browser receiving a minimal HTML file and using JavaScript to render content dynamically.
 
-
 ## Frontend Design Specification
-
 
 ### Authentication Platform
 
@@ -71,6 +69,7 @@ To test Cognito, we created a sandbox environment using **AWS Amplify** and the 
 **Steps taken:**
 
 1. **Created a Cognito User Pool with SMS-based MFA enabled.**
+
    - Go to the **AWS Cognito Console** and create a new user pool.
    - Under **Multi-Factor Authentication (MFA)**, enable **SMS-based MFA** for added security.
    - Configure the user pool settings, ensuring that SMS is available and the user can authenticate via MFA.
@@ -84,14 +83,15 @@ To test Cognito, we created a sandbox environment using **AWS Amplify** and the 
 ```
 
 Then, configure AWS Amplify by editing the src/aws-exports.js file with the credentials from your AWS Cognito User Pool.
-    
+
 ```bash
     import { Amplify } from 'aws-amplify';
     import awsconfig from './src/aws-exports';  // Your Amplify configuration file
     Amplify.configure(awsconfig);
 ```
+
 3. **Implemented the authentication UI in React Native.**
-    We used AWS Amplify's withAuthenticator component to easily implement the authentication screen and MFA:
+   We used AWS Amplify's withAuthenticator component to easily implement the authentication screen and MFA:
 
 ```bash
     import React from 'react';
@@ -103,6 +103,7 @@ Then, configure AWS Amplify by editing the src/aws-exports.js file with the cred
 
     export default withAuthenticator(App);
 ```
+
 This will generate a login screen with built-in authentication flow, including the option for SMS-based MFA if enabled.
 
 4. **Customized the login screen UI.**
@@ -115,7 +116,7 @@ For example:
     import { Button } from '@aws-amplify/ui-react-native';
 
     const CustomLoginButton = () => (
-    <Button 
+    <Button
         title="Sign In"
         style={{ backgroundColor: '#ff6347', borderRadius: 5 }}
     />
@@ -126,7 +127,8 @@ For example:
 We tested the MFA process with AWS Cognito through Postman by simulating the API interactions.
 
 1. **Initiate authentication:**
-First, we send a POST request to the Cognito login endpoint:
+   First, we send a POST request to the Cognito login endpoint:
+
 - Method: POST
 - Endpoint: https://<your-cognito-domain>.auth.<region>.amazoncognito.com/login
 - Request Body:
@@ -137,6 +139,7 @@ First, we send a POST request to the Cognito login endpoint:
     "password": "YourPassword123!"
     }
 ```
+
 This initiates the authentication process and returns a challenge, which in this case is an SMS MFA challenge.
 
 2. **Receive MFA challenge:**
@@ -144,9 +147,11 @@ This initiates the authentication process and returns a challenge, which in this
 Cognito responds with a challenge of type **SMS_MFA** and a session token.
 
 3. **Respond to MFA challenge:**
-We then send a second POST request to respond to the MFA challenge.
+   We then send a second POST request to respond to the MFA challenge.
+
 - Method: POST
 - Endpoint: https://<your-cognito-domain>.auth.<region>.amazoncognito.com/respond-to-auth-challenge
+
 ```bash
     {
     "ChallengeName": "SMS_MFA",
@@ -157,15 +162,15 @@ We then send a second POST request to respond to the MFA challenge.
     }
     }
 ```
+
 If the MFA code is correct, Cognito responds with valid authentication tokens (idToken, accessToken, refreshToken).
 
 4. **Postman Collection:**
-After testing the MFA flow, we saved the entire collection of API requests in Postman for future reference. The collection includes the login request, MFA challenge, and MFA response request.
+   After testing the MFA flow, we saved the entire collection of API requests in Postman for future reference. The collection includes the login request, MFA challenge, and MFA response request.
 
 You can export and save this collection in Postman for later use.
 
 - Export the Postman collection: In Postman, click on the collection name > Export > Collection v2.1. Save the file for future review.
-
 
 **Platforms Considered**
 
@@ -183,51 +188,65 @@ You can export and save this collection in Postman for later use.
 
 - **Veriam**: Specializes in identity verification, which was less relevant for this project.
 
-
 ## Visual Components
 
-*Patterns & Principles:*
+_Patterns & Principles:_
 
 ## Patterns & Principles
 
 These principles ensure that the UI is scalable, maintainable, and easy to extend.
+
 ### 1. Principios SOLID
 
-#### 1.1. Single 
+#### 1.1. Single
+
 Each class has a single responsibility
+
 - `PagoRepository` use exclusively the payment API communication.
 - `Notificador` use notification sends without affecting other functionalities.
 - `HistorialManager`use transaction processing and maintains their history.
 
 #### 1.2. Open
+
 Classes are open for extension but closed for modification:
+
 - `ProcesadorPagoStrategy` allows adding new payment processors without altering the core logic.
 - `NotificadorFactory` can be expanded to include new notification types.
 - `PagoRepositoryImpl` allows method extension without modifying the base structure.
 
-#### 1.3. Liskov 
+#### 1.3. Liskov
+
 The derived classes can substitute the base ones without altering the behavior:
+
 - `NotificadorEmail`, `NotificadorSMS` and `NotificadorPush` implement the `Notificador` interface while maintaining its base contract.
-- `ProcesadorBancario` and `ProcesadorTarjeta` extend  `ProcesadorPagoStrategy`, allowing the payment method to be changed without modifying the core functionality.
+- `ProcesadorBancario` and `ProcesadorTarjeta` extend `ProcesadorPagoStrategy`, allowing the payment method to be changed without modifying the core functionality.
 
 #### 1.4. Interface
+
 Interfaces are small and focused:
+
 - `ProcesadorPagoStrategy` defines specific methods for payment processors.
 - `Notificacion` use exclusively the sending of notifications.
 - `PagoObserver` defines change notifications for `PagoRecurrente`.
 
 #### 1.5. Dependency
+
 Modules depend on abstractions, not concrete implementations:
+
 - `ContextoPago` depends on `ProcesadorPagoStrategy`, allowing the implementation to be changed without modifying the controller.
 - `AuthService` provides authentication and user validation through a single entry point.
 
 ### 2. Principio DRY
+
 Eliminates duplication through reuse:
+
 - `PagoRepositoryImpl` centralizes data access logic to avoid repetition across different services.
 - `HistorialManager` encapsulates transaction history management, preventing logic duplication in multiple places.
 
 ### 3. Separation of Concerns
+
 Responsibilities are divided into distinct layers:
+
 - **Models** like `PagoRecurrente`, `Usuario`and `Transaccion` handle data structures
 - **Repositories** like `PagoRepository` manage data access.
 - **Services** like `PagoService`and `UsuarioService` contain business logic.
@@ -237,48 +256,62 @@ Responsibilities are divided into distinct layers:
 ### 4. Patrones de Diseño
 
 #### 4.1. MVVM (Model-View-ViewModel)
+
 - **Model:** Data structures like `Usuario`, `CuentaBancaria` and `Transaccion` with defined types.
 - **View:** Visual components such as `PaymentScreen`and `UserProfileScreen`.
-- **ViewModel:** Presentation logic classes like  `PaymentViewModel`, integrated with React Native hooks including `useState` and `useEffect`.
+- **ViewModel:** Presentation logic classes like `PaymentViewModel`, integrated with React Native hooks including `useState` and `useEffect`.
 
 #### 4.2. Repository
+
 - `PagoRepositoryImpl` manages payment persistence and encapsulates database access.
-- `PageRepositoryImpl` extends  `PageRepository`, to ensure flexible handling of recurring payments
+- `PageRepositoryImpl` extends `PageRepository`, to ensure flexible handling of recurring payments
 
 #### 4.3. Factory
+
 - `NotificadorFactory` creates `Notificador` instances based on notification type (SMS, Email, Push)
 
 #### 4.4. Strategy
+
 - `ProcesadorPagoStrategy` enables swapping payment methods without modifying core logic.
-- `ProcesadorBancario` and `ProcesadorTarjeta`  implement specific payment strategies.
+- `ProcesadorBancario` and `ProcesadorTarjeta` implement specific payment strategies.
 
 #### 4.5. Observer
+
 - `PagoObserver` enables subscription-based notifications for users.
 - `NotificacionObserver` use notification status updates.
 
 #### 4.6. Singleton
+
 - `AuthService` ensures only one authentication instance exists application-wide.
 
 ## Toolkits & Estándares
+
 We adopt tools that facilitate the implementation and maintenance of visual components, ensuring consistency across both iOS and Android platforms.
+
 ### 1. React Native
+
 - `Cross-platform` mobile development framework for iOS/Android.
 - Optimized native components including `FlatList`, `Button`, and `View`.
 - Built-in support for native modules.
+
 ### 2.React Navigation
+
 - Navigation management with `StackNavigator`, `DrawerNavigator`, and `BottomTabNavigator`, enabling smooth transitions between screens.
 - Passing parameters between screens using `route.params`, simplifying data transfer between views.
 
 ### 3. Componentes UI
+
 - `SafeAreaView` to use safe areas on devices with notches or curved edges.
 - `Vector-icons` for consistent iconography across platforms.
 - `Gesture-handler` to efficiently manage touch interactions.
 
 ### 4. Platform Standards
+
 - Use of `cross-platform` design principles.
 - Visual components like buttons, lists, and text fields follow guidelines that ensure a coherent interface without requiring adjustments between platforms.
 
 ### 5. Complementary Modules
+
 - `react-native-safe-area-context` for safe area management.
 - `expo-font` for loading custom fonts.
 - `expo-asset` for optimized handling of images and resources.
@@ -291,6 +324,7 @@ We adopt tools that facilitate the implementation and maintenance of visual comp
 ## External services
 
 ## A. UI ↔ Business Logic (Frontend)
+
 **Interaction between UI and client-side logic.**
 
 | Component            | Tech + Pattern          | Description                                                          | Relationships                                                         |
@@ -303,29 +337,32 @@ We adopt tools that facilitate the implementation and maintenance of visual comp
 ## B. External Services Integrations
 
 ### 1. Authentication and Authorization
+
 | Service     | Technology  | Description                         | Relationships                               |
 | ----------- | ----------- | ----------------------------------- | ------------------------------------------- |
 | **Cognito** | Cognito SDK | Handles user authentication and 2FA | `AuthService (frontend)` ↔ `NestJS backend` |
 
 ### 2. SaaS and Payment Platforms
+
 | Service             | Technology | Description                            | Relationships                            |
 | ------------------- | ---------- | -------------------------------------- | ---------------------------------------- |
 | **Stripe/PayPal**   | Stripe SDK | Payments processes and subscriptions   | `ProcesadorPagoStrategy (BE)` ↔ `NestJS` |
 | **Plaid/TrueLayer** | Plaid SDK  | Links bank accounts and retrieves data | `PagoRepository` ↔ `NestJS BE`           |
 
 ### 3. External APIs
+
 | Service     | Technology | Description             | Relationships                    |
 | ----------- | ---------- | ----------------------- | -------------------------------- |
 | **AWS SNS** | SNS API    | Sends reminders via SMS | `Notificador (FE)` ↔ `NestJS BE` |
 
 ### 4. Monitoring
+
 | Service            | Technology | Description               | Relationships             |
 | ------------------ | ---------- | ------------------------- | ------------------------- |
 | **AWS CloudWatch** | CloudWatch | Metrics and Log errors    | `NestJS/Lambda (BE only)` |
 | **AWS X-Ray**      | X-ray      | Traces API errors/latency | `API Gateway` ↔ `Lambda`  |
 
 ## Project structure
-
 
 //Se toma del AWS-DEMO
 
@@ -334,16 +371,16 @@ We adopt tools that facilitate the implementation and maintenance of visual comp
 The following diagram illustrates the comprehensive frontend architecture for Billbot, an AI voice-activated payment assistant. This architecture follows a layered design that emphasizes separation of concerns, high cohesion, and low coupling between components, adhering to SOLID principles throughout.
 The architecture is organized into five distinct layers:
 
-* UI Presentation Layer: Using Atomic Design methodology and React Native components to build a cohesive, responsive user interface across platforms.
-* View Model Layer (MVVM): Implementing the Model-View-ViewModel pattern to separate UI from business logic, with dedicated controllers, models, and configuration objects.
-* Service Layer: Handling API connections, notifications, and core business services that power the application's payment functionality.
-* Security Layer: Managing authentication and authorization through Cognito integration with 2FA, ensuring secure access to payment operations.
-* External Integration Layer: Connecting to third-party payment processors, banking APIs, and cloud services.
+- UI Presentation Layer: Using Atomic Design methodology and React Native components to build a cohesive, responsive user interface across platforms.
+- View Model Layer (MVVM): Implementing the Model-View-ViewModel pattern to separate UI from business logic, with dedicated controllers, models, and configuration objects.
+- Service Layer: Handling API connections, notifications, and core business services that power the application's payment functionality.
+- Security Layer: Managing authentication and authorization through Cognito integration with 2FA, ensuring secure access to payment operations.
+- External Integration Layer: Connecting to third-party payment processors, banking APIs, and cloud services.
 
 The architecture employs several design patterns including Observer for notifications, Singleton for authentication services, and Factory for creating various service implementations. Communication between layers follows a strict top-down approach with clearly defined interfaces, allowing for better testability and maintenance.
 As shown in the diagram below, each component has specific responsibilities and communicates with others through well-defined paths, ensuring a robust foundation for scaling the application's functionality.
 
-![alt text](image.png)
+![alt text](FE.png)
 
 # Backend Design Specifications
 
@@ -554,26 +591,32 @@ A **Serverless cloud solution (AWS)** is adopted for its automatic scalability, 
 These are the technologies and services we will use:
 
 **AWS Lambda**
+
 - Executes serverless functions without the need to manage servers.
 - Classes like `PaymentService` create on-demand payments, and `TransactionHandler` efficiently processes transactions.
 
 **RDS PostgreSQL**
+
 - Stores transactional data, ensuring consistency.
 - `PaymentRepository` stores payment details, and `UserRepository` stores user data.
 
 **AWS API Gateway**
+
 - Manages scalable API request traffic.
 - Classes like `PaymentController` handle payment requests, and `UserController` manages user requests.
 
 **AWS Cognito**
+
 - Manages user authentication and authorization.
 - `AuthService` handles user authentication, and `SessionManager` validates user sessions.
 
 **Amazon SNS**
+
 - Sends notifications at scale.
 - Classes like `NotificationService` send notifications about payment or account status, and `PaymentProcessor` sends notifications after processing a payment.
 
 **CloudWatch**
+
 - Provides real-time monitoring and tracking.
 - `ErrorLogger` logs errors and exceptions, and `TransactionTracker` tracks transactions to improve performance.
 
@@ -581,13 +624,13 @@ These are the technologies and services we will use:
 
 These are the frameworks, libraries, and languages we will use:
 
-| Technology   | Role                | Main Advantage                                    |
-|--------------|---------------------|--------------------------------------------------|
-| Node.js      | Backend runtime     | Non-blocking I/O, high performance in the cloud  |
-| NestJS       | Backend framework   | Modular, supports MVC, scalable                 |
-| TypeScript   | Base language       | Strong typing, maintainability, and scalability |
-| PostgreSQL   | Database            | ACID integrity, complex queries                 |
-| Stripe/Plaid | External gateways   | Reliable, secure, widely adopted                |
+| Technology   | Role              | Main Advantage                                  |
+| ------------ | ----------------- | ----------------------------------------------- |
+| Node.js      | Backend runtime   | Non-blocking I/O, high performance in the cloud |
+| NestJS       | Backend framework | Modular, supports MVC, scalable                 |
+| TypeScript   | Base language     | Strong typing, maintainability, and scalability |
+| PostgreSQL   | Database          | ACID integrity, complex queries                 |
+| Stripe/Plaid | External gateways | Reliable, secure, widely adopted                |
 
 ---
 
@@ -597,13 +640,13 @@ A **service-based architecture** is used to facilitate responsibility separation
 
 #### Logical divisions to distribute workload
 
-| Service              | Main Responsibility                          |
-|----------------------|----------------------------------------------|
-| AuthService          | Authentication and authorization management |
-| PaymentService       | Payment processing                          |
-| SubscriptionService  | Subscription plan management                |
-| NotificationService  | Notification delivery                       |
-| UserService          | User registration and profile management    |
+| Service             | Main Responsibility                         |
+| ------------------- | ------------------------------------------- |
+| AuthService         | Authentication and authorization management |
+| PaymentService      | Payment processing                          |
+| SubscriptionService | Subscription plan management                |
+| NotificationService | Notification delivery                       |
+| UserService         | User registration and profile management    |
 
 #### Impact on code organization and team collaboration
 
@@ -643,24 +686,24 @@ The **SemVer** (Semantic Versioning) convention is followed: `MAJOR.MINOR.PATCH`
 
 #### Parts requiring these architectures
 
-- Payment confirmation  
-- Automatic billing reminders  
-- Event logging for traceability  
+- Payment confirmation
+- Automatic billing reminders
+- Event logging for traceability
 
 #### Cloud services providing these features
 
-| Event               | AWS Service            | Architecture Pattern |
-|---------------------|------------------------|----------------------|
-| Payment completed   | EventBridge + Lambda   | Pub/Sub              |
-| Pending reminder    | EventBridge + Lambda   | Pub/Sub              |
-| Subscription error  | EventBridge + Lambda   | Pub/Sub              |
+| Event              | AWS Service          | Architecture Pattern |
+| ------------------ | -------------------- | -------------------- |
+| Payment completed  | EventBridge + Lambda | Pub/Sub              |
+| Pending reminder   | EventBridge + Lambda | Pub/Sub              |
+| Subscription error | EventBridge + Lambda | Pub/Sub              |
 
 #### Integration layers and classes used
 
-- `PagoService`: Emits events  
-- `NotificadorService`: Event subscriber  
-- `EventoService`: Flow orchestrator  
-- `LoggerService`: Event and error persistence  
+- `PagoService`: Emits events
+- `NotificadorService`: Event subscriber
+- `EventoService`: Flow orchestrator
+- `LoggerService`: Event and error persistence
 
 ---
 
@@ -678,29 +721,28 @@ Yes. **AWS API Gateway** is used to manage traffic to the serverless backend.
 
 ##### Security
 
-- Authentication with JWT via AWS Cognito.  
-- CORS validation.  
-- Throttling and quotas per user or IP.  
+- Authentication with JWT via AWS Cognito.
+- CORS validation.
+- Throttling and quotas per user or IP.
 - Integration with AWS WAF for custom rules.
 
 ##### Scalability
 
-- Automatically scales horizontally.  
-- Handles hundreds or thousands of concurrent requests without manual intervention.  
+- Automatically scales horizontally.
+- Handles hundreds or thousands of concurrent requests without manual intervention.
 - Provides caching, logging, and metrics for continuous optimization.
-
 
 ### Data Layer Design
 
 ### 1. data layer design
 
 #### a) Data topology
-        
-**Cloud service technology:** 
+
+**Cloud service technology:**
 
 OLTP (with AWS PostgreSQL)
 
-**Object-oriented design patterns:**  Patterns such as Repository, to encapsulate the data base access.
+**Object-oriented design patterns:** Patterns such as Repository, to encapsulate the data base access.
 
 **Class layers for data access:** Repositories to handle data operations (PagoRepositoryImpl, UsuarioRepositoryImpl, CuentaRepositoryImpl)
 
@@ -710,7 +752,7 @@ OLTP (with AWS PostgreSQL)
 
 #### b) Big Data Repository
 
-**Cloud service technology:**  AWS S3 as Data Lake
+**Cloud service technology:** AWS S3 as Data Lake
 
 **Object‑oriented design patterns:** Adapter/Facade: wrap AWS SDK calls for S3. Singleton: ensure a single shared client instance for each AWS service
 
@@ -743,23 +785,23 @@ The reason to use the relational data base is explained in point a, but the reas
 
 **Object‑oriented design patterns:** Observer to notify an alarm service, and Singleton to ensure a unic instance of failover manager.
 
-**Class layers for data access:** Alerting service using CloudWatch and AWS X-Ray to send notifications, failover manager that promotes the RDS replicate. 
+**Class layers for data access:** Alerting service using CloudWatch and AWS X-Ray to send notifications, failover manager that promotes the RDS replicate.
 
 **Configuration policies/rules:** Backups (continuos backups every determined time), CLoudWatch alarms.
 
 **Expected benefits:** High availability, fast recovery, visibility and monitoring
 
-### 2. object oriented design - programming 
+### 2. object oriented design - programming
 
-#### a) Transactional via SQL Statements 
+#### a) Transactional via SQL Statements
 
 **Cloud service technology:** AWS RDS PostgreSQL
 
-**Object‑oriented design patterns:** RepositoryImpl repositories expose CRUDs and other queries.  
+**Object‑oriented design patterns:** RepositoryImpl repositories expose CRUDs and other queries.
 
 **Class layers for data access:** Repositories like PagoRepositoryImpl, UsuarioRepositoryImpl, CuentaRepositoryImpl, expose different methods like commits or rollbacks. multiple repositories can be accesed in a single transaction context.
 
-**Configuration policies/rules:** Timeouts (auto rollbacks), Isolation, retry policies (after a series of failures) 
+**Configuration policies/rules:** Timeouts (auto rollbacks), Isolation, retry policies (after a series of failures)
 
 **Expected benefits:** Testability and manteinability, portability, faster developemenet
 
@@ -767,11 +809,11 @@ The reason to use the relational data base is explained in point a, but the reas
 
 **Cloud service technology:** AWS RDS PostgreSQL
 
-**Object‑oriented design patterns:** entities map to tables and PagoRepositoryImpl, UsuarioRepositoryImpl, CuentaRepositoryImpl extend TypeORMs  
+**Object‑oriented design patterns:** entities map to tables and PagoRepositoryImpl, UsuarioRepositoryImpl, CuentaRepositoryImpl extend TypeORMs
 
 **Class layers for data access:** Services call repository methods when needed, also define different entities with decorators.
 
-**Configuration policies/rules:** validation (use class validators entities, to ensure the data), 
+**Configuration policies/rules:** validation (use class validators entities, to ensure the data),
 
 **Expected benefits:** Productivity, manteinability (centralized entity definitions simplify evolutions of the data model), consistency (uniform data access patterns across modules and services).
 
@@ -791,7 +833,7 @@ The reason to use the relational data base is explained in point a, but the reas
 
 **Cloud service technology:** AWS RDS PostgreSQL (with support for pooling connections, like RDS Proxy)
 
-**Object‑oriented design patterns:** Singletion (shared ConnectionPoolManager that ensures only one instance manages pool), Factory (ConnectionFactory  encapsulates creation of DB connection), optional use of RDS Proxy as an external manager.
+**Object‑oriented design patterns:** Singletion (shared ConnectionPoolManager that ensures only one instance manages pool), Factory (ConnectionFactory encapsulates creation of DB connection), optional use of RDS Proxy as an external manager.
 
 **Class layers for data access:** connection layer (initializes and manages, and provides connections), repository and service layer
 
@@ -827,7 +869,7 @@ The reason to use the relational data base is explained in point a, but the reas
 
 **Cloud service technology:** AWS RDS with PostgreSQL as the primary relational database engine
 
-**Object‑oriented design patterns:** Repository pattern encapsulates query logic for each entity class,  
+**Object‑oriented design patterns:** Repository pattern encapsulates query logic for each entity class,
 
 **Class layers for data access:** repository layer, Data transfer layer, entity model.
 
@@ -839,30 +881,30 @@ The reason to use the relational data base is explained in point a, but the reas
 
 ## Architecture Compliance Matrix
 
-
 This matrix shows how architectural components fulfill the system's functional and non-functional requirements.
 
 ## Compliance Matrix
 
-| Requirements vs. Components | Frontend (React Native) | Atomic Design | MVVM | API Gateway | Auth Service (Cognito) | Backend (NestJS) | Services & Repositories | AWS Lambda | PostgreSQL DB | AWS S3 | Redis Cache | AWS CloudWatch | AWS SNS |
-|----------------------------|------------------------|--------------|------|-------------|------------------------|------------------|--------------------------|------------|--------------|--------|-------------|----------------|---------|
-| **Functional Requirements** |                        |              |      |             |                        |                  |                          |            |              |        |             |                |         |
-| Voice Interaction          | X                      | X            | X    |             |                        | X                |                          | X          |              |        |             |                |         |
-| Payment Configuration      | X                      | X            | X    | X           | X                      | X                | X                        | X          | X            |        | X           |                |         |
-| Payment Execution          | X                      |              | X    | X           | X                      | X                | X                        | X          | X            |        | X           | X              | X       |
-| **Non-Functional Requirements** |                    |              |      |             |                        |                  |                          |            |              |        |             |                |         |
-| Scalability                | X                      |              |      | X           | X                      | X                | X                        | X          | X            | X      | X           | X              | X       |
-| Security                   | X                      |              |      | X           | X                      | X                | X                        | X          | X            | X      |             | X              |         |
-| Performance                | X                      | X            | X    | X           |                        | X                | X                        | X          | X            |        | X           | X              |         |
-| Availability               |                        |              |      | X           | X                      | X                |                          | X          | X            | X      | X           | X              | X       |
-| Compatibility              | X                      | X            |      |             |                        |                  |                          |            |              |        |             |                |         |
-| Usability                  | X                      | X            | X    |             |                        |                  |                          |            |              |        |             |                |         |
+| Requirements vs. Components     | Frontend (React Native) | Atomic Design | MVVM | API Gateway | Auth Service (Cognito) | Backend (NestJS) | Services & Repositories | AWS Lambda | PostgreSQL DB | AWS S3 | Redis Cache | AWS CloudWatch | AWS SNS |
+| ------------------------------- | ----------------------- | ------------- | ---- | ----------- | ---------------------- | ---------------- | ----------------------- | ---------- | ------------- | ------ | ----------- | -------------- | ------- |
+| **Functional Requirements**     |                         |               |      |             |                        |                  |                         |            |               |        |             |                |         |
+| Voice Interaction               | X                       | X             | X    |             |                        | X                |                         | X          |               |        |             |                |         |
+| Payment Configuration           | X                       | X             | X    | X           | X                      | X                | X                       | X          | X             |        | X           |                |         |
+| Payment Execution               | X                       |               | X    | X           | X                      | X                | X                       | X          | X             |        | X           | X              | X       |
+| **Non-Functional Requirements** |                         |               |      |             |                        |                  |                         |            |               |        |             |                |         |
+| Scalability                     | X                       |               |      | X           | X                      | X                | X                       | X          | X             | X      | X           | X              | X       |
+| Security                        | X                       |               |      | X           | X                      | X                | X                       | X          | X             | X      |             | X              |         |
+| Performance                     | X                       | X             | X    | X           |                        | X                | X                       | X          | X             |        | X           | X              |         |
+| Availability                    |                         |               |      | X           | X                      | X                |                         | X          | X             | X      | X           | X              | X       |
+| Compatibility                   | X                       | X             |      |             |                        |                  |                         |            |               |        |             |                |         |
+| Usability                       | X                       | X             | X    |             |                        |                  |                         |            |               |        |             |                |         |
 
 ## Compliance Analysis
 
 ### Key Functional Requirements
 
 1. **Voice Interaction**
+
    - Frontend React Native: UI for voice capture
    - Atomic Design: Modular components for voice interface
    - MVVM: Separation of voice processing logic
@@ -870,6 +912,7 @@ This matrix shows how architectural components fulfill the system's functional a
    - AWS Lambda: Serverless functions for NLP
 
 2. **Payment Configuration**
+
    - Frontend: Interfaces for account and payment setup
    - API Gateway: Secure management of configuration requests
    - Auth Service (Cognito): Authentication for sensitive operations
@@ -888,24 +931,28 @@ This matrix shows how architectural components fulfill the system's functional a
 ### Non-Functional Requirements
 
 1. **Scalability**
+
    - AWS Lambda: Automatic serverless scaling
    - API Gateway: High concurrency management
    - PostgreSQL: Configured for high load
    - AWS CloudWatch: Performance monitoring
 
 2. **Security**
+
    - Auth Service (Cognito): 2FA, token management
    - API Gateway: Rate limiting, authorization
    - NestJS: Security middleware, validation
    - PostgreSQL: Encryption, access policies
 
 3. **Performance**
+
    - Redis Cache: Fast access to frequent data
    - API Gateway: Route optimization
    - AWS Lambda: On-demand processing
    - NestJS: Query optimization
 
 4. **Availability**
+
    - AWS Lambda: High serverless availability
    - PostgreSQL: Replication and failover
    - AWS CloudWatch: Alerts and monitoring
@@ -915,5 +962,3 @@ This matrix shows how architectural components fulfill the system's functional a
    - React Native: Cross-platform support
    - Atomic Design: Consistent and adaptable interfaces
    - MVVM: Clear separation facilitating maintenance
-
-
