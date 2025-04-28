@@ -319,7 +319,7 @@ We adopt tools that facilitate the implementation and maintenance of visual comp
 
 ## Object design patterns
 
-![Descripción de la imagen](ObjectDisignPatterns.png)
+![Descripción de la imagen](/Images/ObjectDisignPatterns.png)
 
 ## External services
 
@@ -380,7 +380,7 @@ The architecture is organized into five distinct layers:
 The architecture employs several design patterns including Observer for notifications, Singleton for authentication services, and Factory for creating various service implementations. Communication between layers follows a strict top-down approach with clearly defined interfaces, allowing for better testability and maintenance.
 As shown in the diagram below, each component has specific responsibilities and communicates with others through well-defined paths, ensuring a robust foundation for scaling the application's functionality.
 
-![alt text](FE-1.png)
+![alt text](Images/FE-1.png)
 
 # Backend Design Specifications
 
@@ -635,7 +635,7 @@ These are the frameworks, libraries, and languages we will use:
 
 ---
 
-### 3. Service vs. Microservices?
+### 3. Service based Architecture
 
 A **service-based architecture** is used to facilitate responsibility separation and enable progressive scalability.
 
@@ -710,9 +710,7 @@ The **SemVer** (Semantic Versioning) convention is followed: `MAJOR.MINOR.PATCH`
 
 ### 5. API Gateway (Security & Scalability)
 
-#### Is an API Gateway necessary?
-
-Yes. **AWS API Gateway** is used to manage traffic to the serverless backend.
+**AWS API Gateway** is used to manage traffic to the serverless backend.
 
 #### Selected cloud service
 
