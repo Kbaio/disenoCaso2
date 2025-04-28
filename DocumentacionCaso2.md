@@ -380,7 +380,7 @@ The architecture is organized into five distinct layers:
 The architecture employs several design patterns including Observer for notifications, Singleton for authentication services, and Factory for creating various service implementations. Communication between layers follows a strict top-down approach with clearly defined interfaces, allowing for better testability and maintenance.
 As shown in the diagram below, each component has specific responsibilities and communicates with others through well-defined paths, ensuring a robust foundation for scaling the application's functionality.
 
-![alt text](FE.png)
+![alt text](FE-1.png)
 
 # Backend Design Specifications
 
