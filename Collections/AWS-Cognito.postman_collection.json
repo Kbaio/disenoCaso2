@@ -1,0 +1,335 @@
+{
+	"info": {
+		"_postman_id": "21ced09a-b6ed-4649-b5a0-f1c04d479427",
+		"name": "AWS-Cognito",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7410308"
+	},
+	"item": [
+		{
+			"name": "Sign Up Cognito",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-amz-json-1.1",
+						"type": "text"
+					},
+					{
+						"key": "X-Amz-Target",
+						"value": "AWSCognitoIdentityProviderService.SignUp",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"ClientId\": \"4m9bn9o4ug9rmjfmc8oa1jl041\",\r\n  \"Username\": \"davidsr4508@hotmail.com\",\r\n  \"Password\": \"safePassword123!\",\r\n  \"UserAttributes\": [\r\n    {\r\n      \"Name\": \"email\",\r\n      \"Value\": \"davidsr4508@hotmail.com\"\r\n    },\r\n    {\r\n      \"Name\": \"phone_number\",\r\n      \"Value\": \"+50686251419\"\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://cognito-idp.us-east-1.amazonaws.com/\n",
+					"protocol": "https",
+					"host": [
+						"cognito-idp",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"\n"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm Sign Up",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-amz-json-1.1",
+						"type": "text"
+					},
+					{
+						"key": "X-Amz-Target",
+						"value": "AWSCognitoIdentityProviderService.ConfirmSignUp",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"ClientId\": \"4m9bn9o4ug9rmjfmc8oa1jl041\",\r\n  \"Username\": \"davidsr4508@hotmail.com\",\r\n  \"ConfirmationCode\": \"588672\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://cognito-idp.us-east-1.amazonaws.com/\n",
+					"protocol": "https",
+					"host": [
+						"cognito-idp",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"\n"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign in",
+			"request": {
+				"auth": {
+					"type": "awsv4",
+					"awsv4": [
+						{
+							"key": "service",
+							"value": "cognito-idp",
+							"type": "string"
+						},
+						{
+							"key": "region",
+							"value": "us-east-1",
+							"type": "string"
+						},
+						{
+							"key": "secretKey",
+							"value": "REDACTED",
+							"type": "string"
+						},
+						{
+							"key": "accessKey",
+							"value": "REDACTED",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-amz-json-1.1",
+						"type": "text"
+					},
+					{
+						"key": "X-Amz-Target",
+						"value": "AWSCognitoIdentityProviderService.AdminInitiateAuth",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"AuthFlow\": \"ADMIN_NO_SRP_AUTH\",\r\n    \"ClientId\": \"60sms9hejj5a02i0dva0kutdl0\",\r\n    \"UserPoolId\": \"us-east-1_E8TIWa5Yo\",\r\n    \"AuthParameters\": {\r\n        \"USERNAME\": \"davidsr4508@hotmail.com\",\r\n        \"PASSWORD\": \"safePassword123!\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://cognito-idp.us-east-1.amazonaws.com/",
+					"protocol": "https",
+					"host": [
+						"cognito-idp",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-amz-json-1.1",
+								"type": "text"
+							},
+							{
+								"key": "X-Amz-Target",
+								"value": "AWSCognitoIdentityProviderService.AdminInitiateAuth",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"AuthFlow\": \"ADMIN_NO_SRP_AUTH\",\r\n    \"ClientId\": \"60sms9hejj5a02i0dva0kutdl0\",\r\n    \"UserPoolId\": \"us-east-1_E8TIWa5Yo\",\r\n    \"AuthParameters\": {\r\n        \"USERNAME\": \"davidsr4508@hotmail.com\",\r\n        \"PASSWORD\": \"safePassword123!\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://cognito-idp.us-east-1.amazonaws.com/",
+							"protocol": "https",
+							"host": [
+								"cognito-idp",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 22 Apr 2025 07:21:28 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/x-amz-json-1.1"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1710"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "x-amzn-RequestId",
+							"value": "99cf3781-ace0-4c35-9aea-91c1e6b9f75b"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"ChallengeName\": \"SMS_MFA\",\n    \"ChallengeParameters\": {\n        \"CODE_DELIVERY_DELIVERY_MEDIUM\": \"SMS\",\n        \"CODE_DELIVERY_DESTINATION\": \"+*******1419\",\n        \"USER_ID_FOR_SRP\": \"24688438-b081-70e0-bc5a-33cc7752e9e0\"\n    },\n    \"Session\": \"AYABeKglai46MIK1JknPVKEqqc8AHQABAAdTZXJ2aWNlABBDb2duaXRvVXNlclBvb2xzAAEAB2F3cy1rbXMAS2Fybjphd3M6a21zOnVzLWVhc3QtMTo3NDU2MjM0Njc1NTU6a2V5L2IxNTVhZmNhLWJmMjktNGVlZC1hZmQ4LWE5ZTA5MzY1M2RiZQC4AQIBAHhR9E4zNbI1ofi3Y01_Ljgh2wK-ZaC__bKufjbgmejy4gFKgzbaIgBXYjOUWBD5XE6yAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMJTMhVmTgtqhLEE0oAgEQgDsQOzuV0JldLEjdH_JYT3y62fJ06qrckrMEOSBWAluxaiOwhu1naK3yhoxTWQQV3CmWAWIUiqFWu3PTVwIAAAAADAAAEAAAAAAAAAAAAAAAAADJXFLuWOdZvRI-k-B4unYe_____wAAAAEAAAAAAAAAAAAAAAEAAALYlBW1hnWwE_-VeGsq5BlNYGmnxPPRuK76jooFWpssMVQ-MvBGUSIfL5mgdUfGsfdP_5JrWspiIKvTT9Yuo4K4mqM7FaM2yALnV6WMo8GBhkHqdQVwrX5WZMh8gbqoj_joAxqqaeuc1lCV08-HFxaW-pzBw0eDlJJuTr9NDG6HJCSKH09ZyJdhSGqWPKZdXWs4XQalmejqK53t6gQPtN0xAg_UHFbIT-OlTKgHNvNV8GblCeT8uCuPzbZOBl3kagkXc5Yx1EKo5f8CClO5keB3eUdKtH4L0aWqc0D5nCgemSlB2GOpG-EWpeYUBAitE_bUIyqERPWTI5Qio_mLWqyLmE4RitEI_73bTITgl0CW-Q018iJI-oh7I5vPMtNERaLlS5I9eWP13OIyFQFQMnGfewZc0MAda4kB-522UWxH2LCeDHhbEKl9SOhV9IdaJKLad4kwAk8NqtmKZim4CB3S-BtIp_YdapE_0YbCKKrqHV_Fg9QEgbRibOa5M8ogXgkf_m3LpIuSob8mYdL6rsfh4z4BI6TFguA9_NWgUo-FiBRPjshs7qPCbyFqkGhjcGWUbSNoihfM8AunzMMVM-80Dcbk50qKqcoj-Xpb5M5HJbbQS8LokHKqOplHaMCcdP_wUtMcKfmF73naMw4fPyq-ygEVAW2ll0LI3v3sdkC6_Ns7bwYM3fD6l-TWGDvgwkkDtc9XQkfneKi8af9K0DcdRLShKVu78UazCPGlFHkgOkPUmLjsfLlj0PLbwXf84XOpriVZY-Ftvuz4QQK7kiOVmr53CM5BT9FgC_JacQpws1Tmow0ZS0VsZ6Yu6Hy9DME2T72b-gWxPPKhriR865uyNxkdgMSgjs7Dai56bUItnKHQEO1TKjPfCFhC0fvWM3Nz3xkJdBlBE4E3-BJlxSHk_6wcNHcnIqAzGqEAegGY9CBhcCKO8ArWE2lX-BokdPziehXwBKW-Noq_tSBSO7CbvyDaXxlkPuQD\"\n}"
+				}
+			]
+		},
+		{
+			"name": "challenge response",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-amz-json-1.1",
+						"type": "text"
+					},
+					{
+						"key": "X-Amz-Target",
+						"value": "AWSCognitoIdentityProviderService.RespondToAuthChallenge",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"ChallengeName\": \"SMS_MFA\",\r\n  \"ClientId\": \"60sms9hejj5a02i0dva0kutdl0\",\r\n  \"Session\": \"AYABeKglai46MIK1JknPVKEqqc8AHQABAAdTZXJ2aWNlABBDb2duaXRvVXNlclBvb2xzAAEAB2F3cy1rbXMAS2Fybjphd3M6a21zOnVzLWVhc3QtMTo3NDU2MjM0Njc1NTU6a2V5L2IxNTVhZmNhLWJmMjktNGVlZC1hZmQ4LWE5ZTA5MzY1M2RiZQC4AQIBAHhR9E4zNbI1ofi3Y01_Ljgh2wK-ZaC__bKufjbgmejy4gFKgzbaIgBXYjOUWBD5XE6yAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMJTMhVmTgtqhLEE0oAgEQgDsQOzuV0JldLEjdH_JYT3y62fJ06qrckrMEOSBWAluxaiOwhu1naK3yhoxTWQQV3CmWAWIUiqFWu3PTVwIAAAAADAAAEAAAAAAAAAAAAAAAAADJXFLuWOdZvRI-k-B4unYe_____wAAAAEAAAAAAAAAAAAAAAEAAALYlBW1hnWwE_-VeGsq5BlNYGmnxPPRuK76jooFWpssMVQ-MvBGUSIfL5mgdUfGsfdP_5JrWspiIKvTT9Yuo4K4mqM7FaM2yALnV6WMo8GBhkHqdQVwrX5WZMh8gbqoj_joAxqqaeuc1lCV08-HFxaW-pzBw0eDlJJuTr9NDG6HJCSKH09ZyJdhSGqWPKZdXWs4XQalmejqK53t6gQPtN0xAg_UHFbIT-OlTKgHNvNV8GblCeT8uCuPzbZOBl3kagkXc5Yx1EKo5f8CClO5keB3eUdKtH4L0aWqc0D5nCgemSlB2GOpG-EWpeYUBAitE_bUIyqERPWTI5Qio_mLWqyLmE4RitEI_73bTITgl0CW-Q018iJI-oh7I5vPMtNERaLlS5I9eWP13OIyFQFQMnGfewZc0MAda4kB-522UWxH2LCeDHhbEKl9SOhV9IdaJKLad4kwAk8NqtmKZim4CB3S-BtIp_YdapE_0YbCKKrqHV_Fg9QEgbRibOa5M8ogXgkf_m3LpIuSob8mYdL6rsfh4z4BI6TFguA9_NWgUo-FiBRPjshs7qPCbyFqkGhjcGWUbSNoihfM8AunzMMVM-80Dcbk50qKqcoj-Xpb5M5HJbbQS8LokHKqOplHaMCcdP_wUtMcKfmF73naMw4fPyq-ygEVAW2ll0LI3v3sdkC6_Ns7bwYM3fD6l-TWGDvgwkkDtc9XQkfneKi8af9K0DcdRLShKVu78UazCPGlFHkgOkPUmLjsfLlj0PLbwXf84XOpriVZY-Ftvuz4QQK7kiOVmr53CM5BT9FgC_JacQpws1Tmow0ZS0VsZ6Yu6Hy9DME2T72b-gWxPPKhriR865uyNxkdgMSgjs7Dai56bUItnKHQEO1TKjPfCFhC0fvWM3Nz3xkJdBlBE4E3-BJlxSHk_6wcNHcnIqAzGqEAegGY9CBhcCKO8ArWE2lX-BokdPziehXwBKW-Noq_tSBSO7CbvyDaXxlkPuQD\",\r\n  \"ChallengeResponses\": {\r\n    \"USERNAME\": \"davidsr4508@hotmail.com\",\r\n    \"SMS_MFA_CODE\": \"065544\"\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://cognito-idp.us-east-1.amazonaws.com/",
+					"protocol": "https",
+					"host": [
+						"cognito-idp",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "tokens",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-amz-json-1.1",
+								"type": "text"
+							},
+							{
+								"key": "X-Amz-Target",
+								"value": "AWSCognitoIdentityProviderService.RespondToAuthChallenge",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"ChallengeName\": \"SMS_MFA\",\r\n  \"ClientId\": \"60sms9hejj5a02i0dva0kutdl0\",\r\n  \"Session\": \"AYABeKglai46MIK1JknPVKEqqc8AHQABAAdTZXJ2aWNlABBDb2duaXRvVXNlclBvb2xzAAEAB2F3cy1rbXMAS2Fybjphd3M6a21zOnVzLWVhc3QtMTo3NDU2MjM0Njc1NTU6a2V5L2IxNTVhZmNhLWJmMjktNGVlZC1hZmQ4LWE5ZTA5MzY1M2RiZQC4AQIBAHhR9E4zNbI1ofi3Y01_Ljgh2wK-ZaC__bKufjbgmejy4gFKgzbaIgBXYjOUWBD5XE6yAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMJTMhVmTgtqhLEE0oAgEQgDsQOzuV0JldLEjdH_JYT3y62fJ06qrckrMEOSBWAluxaiOwhu1naK3yhoxTWQQV3CmWAWIUiqFWu3PTVwIAAAAADAAAEAAAAAAAAAAAAAAAAADJXFLuWOdZvRI-k-B4unYe_____wAAAAEAAAAAAAAAAAAAAAEAAALYlBW1hnWwE_-VeGsq5BlNYGmnxPPRuK76jooFWpssMVQ-MvBGUSIfL5mgdUfGsfdP_5JrWspiIKvTT9Yuo4K4mqM7FaM2yALnV6WMo8GBhkHqdQVwrX5WZMh8gbqoj_joAxqqaeuc1lCV08-HFxaW-pzBw0eDlJJuTr9NDG6HJCSKH09ZyJdhSGqWPKZdXWs4XQalmejqK53t6gQPtN0xAg_UHFbIT-OlTKgHNvNV8GblCeT8uCuPzbZOBl3kagkXc5Yx1EKo5f8CClO5keB3eUdKtH4L0aWqc0D5nCgemSlB2GOpG-EWpeYUBAitE_bUIyqERPWTI5Qio_mLWqyLmE4RitEI_73bTITgl0CW-Q018iJI-oh7I5vPMtNERaLlS5I9eWP13OIyFQFQMnGfewZc0MAda4kB-522UWxH2LCeDHhbEKl9SOhV9IdaJKLad4kwAk8NqtmKZim4CB3S-BtIp_YdapE_0YbCKKrqHV_Fg9QEgbRibOa5M8ogXgkf_m3LpIuSob8mYdL6rsfh4z4BI6TFguA9_NWgUo-FiBRPjshs7qPCbyFqkGhjcGWUbSNoihfM8AunzMMVM-80Dcbk50qKqcoj-Xpb5M5HJbbQS8LokHKqOplHaMCcdP_wUtMcKfmF73naMw4fPyq-ygEVAW2ll0LI3v3sdkC6_Ns7bwYM3fD6l-TWGDvgwkkDtc9XQkfneKi8af9K0DcdRLShKVu78UazCPGlFHkgOkPUmLjsfLlj0PLbwXf84XOpriVZY-Ftvuz4QQK7kiOVmr53CM5BT9FgC_JacQpws1Tmow0ZS0VsZ6Yu6Hy9DME2T72b-gWxPPKhriR865uyNxkdgMSgjs7Dai56bUItnKHQEO1TKjPfCFhC0fvWM3Nz3xkJdBlBE4E3-BJlxSHk_6wcNHcnIqAzGqEAegGY9CBhcCKO8ArWE2lX-BokdPziehXwBKW-Noq_tSBSO7CbvyDaXxlkPuQD\",\r\n  \"ChallengeResponses\": {\r\n    \"USERNAME\": \"davidsr4508@hotmail.com\",\r\n    \"SMS_MFA_CODE\": \"065544\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://cognito-idp.us-east-1.amazonaws.com/",
+							"protocol": "https",
+							"host": [
+								"cognito-idp",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 22 Apr 2025 07:21:59 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/x-amz-json-1.1"
+						},
+						{
+							"key": "Content-Length",
+							"value": "4165"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "x-amzn-RequestId",
+							"value": "00782826-2a5a-40cd-8d45-52e6dd534e4a"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"AuthenticationResult\": {\n        \"AccessToken\": \"eyJraWQiOiJJbmM0WkFoWGRWSm0yTHVZb1NmNk5BYkxqMitjQ2lBVVwvQlwvYXNTSzFEOGs9IiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIyNDY4ODQzOC1iMDgxLTcwZTAtYmM1YS0zM2NjNzc1MmU5ZTAiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV9FOFRJV2E1WW8iLCJjbGllbnRfaWQiOiI2MHNtczloZWpqNWEwMmkwZHZhMGt1dGRsMCIsIm9yaWdpbl9qdGkiOiIyMTRhMTI3NS1jMjBmLTRkNTMtODYzNy05NTcwNzg3Y2Y3MDkiLCJldmVudF9pZCI6Ijk5Y2YzNzgxLWFjZTAtNGMzNS05YWVhLTkxYzFlNmI5Zjc1YiIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE3NDUzMDY1MTksImV4cCI6MTc0NTMxMDExOSwiaWF0IjoxNzQ1MzA2NTE5LCJqdGkiOiIxMjc2MTAzYi00YTBhLTQxNGMtODhiZi03NjNlMzFlOWFmMTgiLCJ1c2VybmFtZSI6IjI0Njg4NDM4LWIwODEtNzBlMC1iYzVhLTMzY2M3NzUyZTllMCJ9.q_NXfqhEJQm8E2SQkQF8fBwZ9h_sVey1-YxD2UgW4d0Aq7cHM0HJ9RRMKSVYliVbxEVDt6VAGWFC5RMMuX1lo-zfjz9X11RSGYPzL-g5b-rMeG-SjDzC8uhV6rDR18YTabNX2mW56OrEhMjvRQDozjt4CPH-BwQDE1_Yrt8QYn8QA-rNY5y8caUfg-5WSUeqVRL0dlz0EQMo7hcdB4HR1I2m3vEjOXjKaGlFASEXjjdKfCnrVvpi2rm-frQnKIab1Dn75vxtEPKpyM5Q_Lu-RijSVw6an0Zd2j4jHA6IQVLE2uf7AZVPvekEZ4At9ZuqHtofFYOtdZiAsAKhW-ccWQ\",\n        \"ExpiresIn\": 3600,\n        \"IdToken\": \"eyJraWQiOiJNaVNMZjNNc0tMa294bXdUR04wdG9LRkNSYlkzQlBSWThxMUxZcVkxc0pNPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIyNDY4ODQzOC1iMDgxLTcwZTAtYmM1YS0zM2NjNzc1MmU5ZTAiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfRThUSVdhNVlvIiwicGhvbmVfbnVtYmVyX3ZlcmlmaWVkIjp0cnVlLCJjb2duaXRvOnVzZXJuYW1lIjoiMjQ2ODg0MzgtYjA4MS03MGUwLWJjNWEtMzNjYzc3NTJlOWUwIiwib3JpZ2luX2p0aSI6IjIxNGExMjc1LWMyMGYtNGQ1My04NjM3LTk1NzA3ODdjZjcwOSIsImF1ZCI6IjYwc21zOWhlamo1YTAyaTBkdmEwa3V0ZGwwIiwiZXZlbnRfaWQiOiI5OWNmMzc4MS1hY2UwLTRjMzUtOWFlYS05MWMxZTZiOWY3NWIiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTc0NTMwNjUxOSwicGhvbmVfbnVtYmVyIjoiKzUwNjg2MjUxNDE5IiwiZXhwIjoxNzQ1MzEwMTE5LCJpYXQiOjE3NDUzMDY1MTksImp0aSI6IjgxMjY3NzczLWM2MDktNDMyMi1hNmNiLWVkOTI5YjhhYmUyZCIsImVtYWlsIjoiZGF2aWRzcjQ1MDhAaG90bWFpbC5jb20ifQ.ncIRCEhCRhz2bTxzL_Eguh449u6RhfImjP4xV5DcpRqi-WzMHyMpbqHHWn7P0JKSa51rE-R3WgiVFFRK-zwifD1tONrLoOR6dh5eRTfsPalEGnKUTcRJx_bGMz3WrXL1CDmKlRzlDCuDsy9oSup-mOLCQTcd41ZKYHyL6HvMI_QwGMgr-IXhMhF9b9bhEayk4nOyWLWbT4-oVLjIyzNmuaG3ePZtl_ysColtSelm5KuZXHcGWd0MMupxYXM1G7AXGMD3IuIWaa_tMnRiNx4AwKB6mHlJwXaqgTWc1W0Pn05J2A64YUcyrBiR9MO_PVicyoQYh62JU8Ok_ynIcS5Udg\",\n        \"RefreshToken\": \"eyJjdHkiOiJKV1QiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAifQ.v9WVOAO_ow4Kz6iD3RwJtEf5pb-D1SnbEewO0EWc3UpWrzo9EZlXDn0dngJqN098G4QjOIBJo3jMrHpK-n5lgT1fL6F1lIuymvjNi-IcWrSM90ypuzvSwACvUVdi_hMfYjWPE8IMA5SXmSIvZ3lpz8OAYeC_d5_BSOXzdT-ZuarlI1E0gjDQn8O2fHlsVbj62TiTd3fnsFOCllE0XDLbMDBj170o73zvt9m7zwQTByk4ydXlbV8a1K_ZR8NLkGkqw8VtOFqMePdgVqI2Bhd5AAw2bUIhlii1ao-ptG37xNBPyZ5QK4TiFrm9JsHBdJ_ZYfeklwXr1qBapj3PAO_2XQ.Y0i0jrAnVZikCZAj.oZbmzsprQQWYqHETioTLWqznhGD-YHWv_fs8vhmIWOvqbPnIz0Sszh-XVWHn7HVWXJyFzcD8GmK8OKs2ZKivufd9QUIUWFLLJKbUYMBVY2gzlHYKm2iuGWttdK5eRFLxpvjzDIRtsj8WHld_dZg2pi495jbXFKOrwH2_JfP1ONkhhMmPQUHohPQnUmjrX5AvLb6F_Mk0WqjUOTY6EGmoikIj68kEDtc8tdpkotfUpIeX2wquM0UXBmwE5TUPZSNm6QFDHStWEaiVpInEMlSp3yvvl5kqpq8XEfMZQVLxoTb_r56iWgmMB3sIoXQrBVGWQX0rNYAcHmSnxWP_DtZyTYkphAI4tIjVNeU8Z_EyoOTj_COyAQoNpmcwjrb-C650ffYklJMFoXXIbGVAjUlmDv8Nkg-uR-fs8QUazZkd1UskHSz2Ocij0FTTGtibCBHCgDeVM6iz0V7o2s3p1Osd3GsYVttFdFEiB7xwDO7guXHc5I2ByB44McvIC_OHxOseywhwgRUzRHq8X73Fo4Z9wXLg2P-_EcYjSK8BRUOR2ifEY4U9biDUbxIX__T0kSYkxQCkg_BBl_-mc21nh8MXJg_F-fyNJxvz8eVvIWUHTypefx1y99UaO4utVyfz6EgpsxQuUh-RiM9_JbR43TxQJp1sfnYMbvFfCczk_f6K4uB2i54vXiW8-wgMZAyXIDZQH53ntQANzLPwFOEox9NgvYhDHMBg4zf0L3dGRuWnuUsEdOrZjuo3s00tYCAK6-h8jXcsVnjRjgz0atvjwQTzyNiB87K4Ej8lpxoNR-TGMjUkCGZVISdQkjbuwP-Mqqmv0g4Y48dv2kq4y45VQHPKtaym-Gt7JM-TpOSpUHp9XuEl6FWr4loMCb0Vvivh2EwlzhzpiFQsEUWAVX3bSgP7SiAA8Qh2tmRZ2Z1GLTNGcy_PcDwtIh9bi-tAW9t793b3mAFcPiSsN8l52BaBkkeQLI8h_Zp1IO0s7FlIegXk7VfK688B1egp7LxKz44nV9akOqno-xjUydM-fgpx4XE0n-ze0SrwdYroopIleavedVaZtqnrkvqssPKqcjW9imAamAq4BJnXFk5yc1IMrHshwLY0quZdmyiuAMhaiT5qOoD7Z-GknpY_j60rUuxgBsKnTiWamx5YT_OK3xI-xSgkNUzPctwB8hr2PpE0RGpaoWrjnIbl1Hr8HwyqnvOJXIMUmqMQjEWhvYhpodzNXPZubCQTloOrFyonoBAkfdki0wh1YnMYB47ovTOdZM1LBQh4sDEECnY3vtXjyJyrYT7Z0awYh2w3dZRrc4R5axqsL5hcq-VaYi8Hs8mGGi8.jJOdM4pyWWHvLPa3Pw4ZFQ\",\n        \"TokenType\": \"Bearer\"\n    },\n    \"ChallengeParameters\": {}\n}"
+				}
+			]
+		}
+	]
+}
