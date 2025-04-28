@@ -560,11 +560,12 @@ Used to record significant events in the financial system.
 
 - Each relevant action generates an event (`PagoRealizadoEvent`, `CuentaBloqueadaEvent`) that can be replayed to reconstruct the system's state.
 
-**Decorator**
-
-Extensively used for validation, authorization, and data transformation.
-
-- Decorators like `@UseGuards`, `@Roles`, `@Transform`, and custom validators apply cross-cutting rules to the system.
+**Decorators**
+| Decorator | Target Class/Method | Responsibility | Rules & Dependencies |
+| --------------------- | ------------------------------------ | ---------------------------------------- | --------------------------------------------------------------------------- |
+| `@AuthDecorator()` | Controllers (`AuthController`) | Validates JWT and roles from AWS Cognito | - Valid token using `aws-jwt-verify`<br>- Allowed roles: `USER`, `ADMIN` |
+| `@PaymentGuard()` | Service methods (`processPayment()`) | Enforces transaction limits | - Max amount: `$20,000 USD/day`<br>- Locks accounts after 3 failed attempts |
+| `@EncryptSensitive()` | Entity classes (`User`, `Payment`) | Encrypts sensitive data | - Algorithm: AES-256 with AWS KMS |
 
 **Adapter**
 
